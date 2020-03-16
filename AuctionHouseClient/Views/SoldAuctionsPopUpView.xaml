@@ -1,0 +1,49 @@
+﻿<Window x:Class="AuctionHouseClient.Views.SoldAuctionsPopUpView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AuctionHouseClient.Views"
+        mc:Ignorable="d"
+        Title="SoldAuctionsPopUpView" Height="300" Width="200">
+    <Grid Background="#AAAAAA">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="15*"/>
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="Name" Grid.Column="0" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="5,0,5,0"/>
+        <TextBlock Text="When" Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="0,0,0,0"/>
+        <TextBlock Text="Price" Grid.Column="2" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="0,0,0,0"/>
+        <TextBlock Text="Claim" Grid.Column="3" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="0,0,5,0"/>
+        <ListView x:Name='MailListView' ItemsSource="{Binding MailList, UpdateSourceTrigger=PropertyChanged}" 
+                  Background="#848484" BorderBrush="Transparent"
+                  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Margin="5,0,5,0" 
+                  VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Path=ContainedItem.name}" TextWrapping="Wrap" Grid.Column="0" HorizontalAlignment="Stretch"/>
+                        <TextBlock Text="{Binding Path=RecievedDate}" TextWrapping="Wrap" Grid.Column="1" HorizontalAlignment="Stretch"/>
+                        <TextBlock Text="{Binding Path=ContainedItem.amount}" TextWrapping="Wrap" Grid.Column="2" HorizontalAlignment="Stretch"/>
+                        <Button Content="Claim" Grid.Column="3"/>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Button Content="Claim All" BorderBrush="Transparent" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0,2,5,0" Click="ClaimAll_Click"/>
+        <Button Content="Close" BorderBrush="Transparent" Grid.Column="3" Grid.Row="2" Grid.ColumnSpan="1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="5,2,5,0" Click="Close_Click"/>
+    </Grid>
+</Window>

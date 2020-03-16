@@ -1,0 +1,145 @@
+﻿<UserControl x:Class="AuctionHouseClient.Views.MyAuctionsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AuctionHouseClient.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Background="#AAAAAA">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="7*"/>
+            <ColumnDefinition Width="7*"/>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <TextBox Text="Search own auctions" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="4" VerticalAlignment="Center"/>
+        <Grid Background="#848484" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="20*"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" MouseDown="Grid_Click">
+                <TextBlock Text="Name" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Grid>
+            <Grid Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" MouseDown="Grid_Click">
+                <TextBlock Text="Time Left" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Grid>
+            <Grid Grid.Row="0" Grid.Column="2" HorizontalAlignment="Stretch" MouseDown="Grid_Click">
+                <TextBlock Text="Amount" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Grid>
+            <Grid Grid.Row="0" Grid.Column="3" HorizontalAlignment="Stretch" MouseDown="Grid_Click">
+                <TextBlock Text="Bid" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Grid>
+            <Grid Grid.Row="0" Grid.Column="4" HorizontalAlignment="Stretch" MouseDown="Grid_Click">
+                <TextBlock Text="Buyout" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Grid>
+
+            <ListView Background="#848484" BorderBrush="Transparent" ItemsSource="{Binding PostedList, UpdateSourceTrigger=PropertyChanged}" 
+                      x:Name="ListViewSearched" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5" Grid.RowSpan="1" AlternationCount="2" 
+                      HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid HorizontalAlignment="Stretch" Grid.Column="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="20*"/>
+                                </Grid.ColumnDefinitions>
+                                <Image Source="{Binding Path=item.image}" Height="15" Width="15" Grid.Column="0" HorizontalAlignment="Center">
+                                    <Image.ToolTip>
+                                        <ToolTip Background="#AAAAAA">
+                                            <Grid>
+                                                <ListView ItemsSource="{Binding Path=item.tooltipInfo}" Grid.Row="3" Grid.ColumnSpan="2" VerticalAlignment="Stretch" BorderBrush="Transparent" Background="#AAAAAA" Margin="0" Padding="0">
+                                                    <ListView.View>
+                                                        <GridView>
+                                                            <GridView.ColumnHeaderContainerStyle>
+                                                                <Style TargetType="{x:Type GridViewColumnHeader}">
+                                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                                </Style>
+                                                            </GridView.ColumnHeaderContainerStyle>
+                                                            <GridViewColumn>
+                                                                <GridViewColumn.CellTemplate>
+                                                                    <DataTemplate>
+                                                                        <TextBlock Text="{Binding Path=Key}" HorizontalAlignment="Stretch" Foreground="Black"/>
+                                                                    </DataTemplate>
+                                                                </GridViewColumn.CellTemplate>
+                                                            </GridViewColumn>
+                                                            <GridViewColumn>
+                                                                <GridViewColumn.CellTemplate>
+                                                                    <DataTemplate>
+                                                                        <TextBlock Text="" Width="70"/>
+                                                                    </DataTemplate>
+                                                                </GridViewColumn.CellTemplate>
+                                                            </GridViewColumn>
+                                                            <GridViewColumn>
+                                                                <GridViewColumn.CellTemplate>
+                                                                    <DataTemplate>
+                                                                        <TextBlock Text="{Binding Path=Value}" HorizontalAlignment="Right" Foreground="Black"/>
+                                                                    </DataTemplate>
+                                                                </GridViewColumn.CellTemplate>
+                                                            </GridViewColumn>
+                                                        </GridView>
+                                                    </ListView.View>
+                                                </ListView>
+                                            </Grid>
+                                        </ToolTip>
+                                    </Image.ToolTip>
+                                </Image>
+                                <TextBlock Text="{Binding Path=item.name}" Grid.Column="1" FontSize="16" Margin="2,0,2,0" HorizontalAlignment="Left"/>
+                            </Grid>
+                            <TextBlock Text="{Binding Path=TimeLeft}" FontSize="16" Grid.Column="1" Margin="2,0,2,0" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding Path=item.amount}" FontSize="16" Grid.Column="2" Margin="2,0,2,0" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding Path=Bid}" FontSize="16" Grid.Column="3" Margin="2,0,2,0" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding Path=Buyout}" FontSize="16" Grid.Column="4" Margin="2,0,2,0" HorizontalAlignment="Center"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+        <Button BorderBrush="Transparent" Content="Cancel Auction" Grid.Column="4" Grid.ColumnSpan="1" Grid.Row="2" Margin="1,3,0,0" VerticalAlignment="Top" HorizontalAlignment="Stretch" />
+        <Button BorderBrush="Transparent" Content="Mails" Grid.Column="3" Grid.ColumnSpan="1" Grid.Row="2" Margin="0,3,1,0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Click="Mails_Click" />
+        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
+            <StackPanel>
+                <TextBlock Text="Total Buyout Reg. Currency:" Grid.Column="1" Grid.Row="2"/>
+                <TextBlock Text="Total Bid Reg. Currency:" Grid.Column="1" Grid.Row="2"/>
+            </StackPanel>
+            <StackPanel Margin="4,0,0,0">
+                <TextBlock Text="XXXXXX.XX" Grid.Column="1" Grid.Row="2"/>
+                <TextBlock Text="XXXXXX.XX" Grid.Column="1" Grid.Row="2"/>
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal">
+            <StackPanel>
+                <TextBlock Text="Total Buyout Premium Currency:" Grid.Column="1" Grid.Row="2"/>
+                <TextBlock Text="Total Bid Premium Currency:" Grid.Column="1" Grid.Row="2"/>
+            </StackPanel>
+            <StackPanel Margin="4,0,0,0">
+                <TextBlock Text="XXXXXX.XX" Grid.Column="1" Grid.Row="2"/>
+                <TextBlock Text="XXXXXX.XX" Grid.Column="1" Grid.Row="2"/>
+            </StackPanel>
+        </StackPanel>
+        
+    </Grid>
+</UserControl>

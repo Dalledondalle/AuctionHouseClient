@@ -1,0 +1,286 @@
+﻿<UserControl x:Class="AuctionHouseClient.Views.MyInventoryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AuctionHouseClient.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style x:Key="Bazooka">
+            <Setter Property="TextElement.FontFamily" Value="#font/BazookaRegular"/>
+        </Style>
+    </UserControl.Resources>
+    <Grid Background="#AAAAAA">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="8*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="4*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Inventory Panel-->
+        <TextBlock Text="Inventory" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Style="{DynamicResource Bazooka}" FontFamily="/AuctionHouseClient;component/Font/#Bazooka"/>
+        <TextBox Text="{Binding InventorySearch, UpdateSourceTrigger=PropertyChanged}" BorderBrush="Transparent" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"/>
+        <TextBlock Text="Search" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Visibility="{Binding InvVis, UpdateSourceTrigger=PropertyChanged}" IsHitTestVisible="False" Margin="2,0,0,0" Foreground="Gray"/>
+        <ScrollViewer x:Name="InvScroll" BorderBrush="Transparent" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Background="#848484" AllowDrop="True" Drop="DropToEvent">
+            <ItemsControl ItemsSource="{Binding Path=inventory}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel ScrollViewer.CanContentScroll="True"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid x:Name="InvGrid">
+                            <Image Source="{Binding Path=image}" Height="50" Width="50" MouseLeftButtonDown="DragFrom">
+                                <Image.ContextMenu>
+                                    <ContextMenu x:Name="InvMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource=    {RelativeSource Self}}">
+                                        <MenuItem Header="Move to bank" Click="FromInventoryToBank"/>
+                                        <MenuItem Header="Mark as WTS" Click="MarkAsWTS"/>
+                                    </ContextMenu>
+                                </Image.ContextMenu>
+                                <Image.ToolTip>
+                                    <ToolTip Background="#AAAAAA">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="1*"/>
+                                                <ColumnDefinition Width="1*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*"/>
+                                                <RowDefinition Height="1*"/>
+                                                <RowDefinition Height="1*"/>
+                                                <RowDefinition Height="1*"/>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Text="Name: " Grid.Column="0" Grid.Row="0" Foreground="Black" Margin="10,0,0,3"/>
+                                            <TextBlock Text="{Binding Path=name}" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right" Foreground="Black" Margin="0,0,10,3"/>
+                                            <TextBlock Text="Category: " Grid.Column="0" Grid.Row="1" Foreground="Black" Margin="10,0,0,3"/>
+                                            <TextBlock Text="{Binding Path=category}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" Foreground="Black" Margin="0,0,10,3"/>
+                                            <TextBlock Text="Game: " Grid.Column="0" Grid.Row="2" Foreground="Black" Margin="10,0,0,0"/>
+                                            <TextBlock Text="{Binding Path=game}" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" Foreground="Black" Margin="0,0,10,0"/>
+                                            <ListView ItemsSource="{Binding Path=stats}" Grid.Row="3" Grid.ColumnSpan="2" VerticalAlignment="Stretch" BorderBrush="Transparent" Background="#AAAAAA" Margin="0" Padding="0">
+                                                <ListView.View>
+                                                    <GridView>
+                                                        <GridView.ColumnHeaderContainerStyle>
+                                                            <Style TargetType="{x:Type GridViewColumnHeader}">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                            </Style>
+                                                        </GridView.ColumnHeaderContainerStyle>
+                                                        <GridViewColumn>
+                                                            <GridViewColumn.CellTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="{Binding Path=Key}" HorizontalAlignment="Stretch" Foreground="Black"/>
+                                                                </DataTemplate>
+                                                            </GridViewColumn.CellTemplate>
+                                                        </GridViewColumn>
+                                                        <GridViewColumn>
+                                                            <GridViewColumn.CellTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="" Width="70"/>
+                                                                </DataTemplate>
+                                                            </GridViewColumn.CellTemplate>
+                                                        </GridViewColumn>
+                                                        <GridViewColumn>
+                                                            <GridViewColumn.CellTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="{Binding Path=Value}" HorizontalAlignment="Right" Foreground="Black"/>
+                                                                </DataTemplate>
+                                                            </GridViewColumn.CellTemplate>
+                                                        </GridViewColumn>
+                                                    </GridView>
+                                                </ListView.View>
+                                            </ListView>
+                                        </Grid>
+                                    </ToolTip>
+                                </Image.ToolTip>
+                            </Image>
+                            <TextBlock Text="{Binding Path=amount}" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <!-- Bank Panel-->
+        <TextBlock Text="Bank" Grid.Row="0" Grid.Column="4" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+        <TextBox Text="{Binding BankSearch, UpdateSourceTrigger=PropertyChanged}" BorderBrush="Transparent" Grid.Row="0" Grid.Column="5" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"/>
+        <TextBlock Text="Search" Grid.Row="0" Grid.Column="5" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Visibility="{Binding BankVis, UpdateSourceTrigger=PropertyChanged}" IsHitTestVisible="False" Margin="2,0,0,0" Foreground="Gray"/>
+        <ScrollViewer x:Name="BankScroll" BorderBrush="Transparent" Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="2" Background="#848484" AllowDrop="True" Drop="DropToEvent">
+            <ItemsControl ItemsSource="{Binding Path=bank}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel ScrollViewer.CanContentScroll="True"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid x:Name="BankGrid">
+                            <Image Source="{Binding Path=image}" Height="50" Width="50" MouseLeftButtonDown="DragFrom">
+                                <Image.ContextMenu>
+                                    <ContextMenu x:Name="BankMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource=    {RelativeSource Self}}">
+                                        <MenuItem Header="Move to Inventory" Click="FromBankyToInventory" />
+                                        <MenuItem Header="Mark as WTS" Click="MarkAsWTS"/>
+                                    </ContextMenu>
+                                </Image.ContextMenu>
+                                <Image.ToolTip>
+                                    <ToolTip Background="#AAAAAA">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="1*"/>
+                                                <ColumnDefinition Width="1*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*"/>
+                                                <RowDefinition Height="1*"/>
+                                                <RowDefinition Height="1*"/>
+                                                <RowDefinition Height="1*"/>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Text="Name: " Grid.Column="0" Grid.Row="0" Foreground="Black" Margin="10,0,0,3"/>
+                                            <TextBlock Text="{Binding Path=name}" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right" Foreground="Black" Margin="0,0,10,3"/>
+                                            <TextBlock Text="Category: " Grid.Column="0" Grid.Row="1" Foreground="Black" Margin="10,0,0,3"/>
+                                            <TextBlock Text="{Binding Path=category}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" Foreground="Black" Margin="0,0,10,3"/>
+                                            <TextBlock Text="Game: " Grid.Column="0" Grid.Row="2" Foreground="Black" Margin="10,0,0,0"/>
+                                            <TextBlock Text="{Binding Path=game}" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" Foreground="Black" Margin="0,0,10,0"/>
+                                            <ListView ItemsSource="{Binding Path=stats}" Grid.Row="3" Grid.ColumnSpan="2" VerticalAlignment="Stretch" BorderBrush="Transparent" Background="#AAAAAA" Margin="0" Padding="0">
+                                                <ListView.View>
+                                                    <GridView>
+                                                        <GridView.ColumnHeaderContainerStyle>
+                                                            <Style TargetType="{x:Type GridViewColumnHeader}">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                            </Style>
+                                                        </GridView.ColumnHeaderContainerStyle>
+                                                        <GridViewColumn>
+                                                            <GridViewColumn.CellTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="{Binding Path=Key}" HorizontalAlignment="Stretch" Foreground="Black"/>
+                                                                </DataTemplate>
+                                                            </GridViewColumn.CellTemplate>
+                                                        </GridViewColumn>
+                                                        <GridViewColumn>
+                                                            <GridViewColumn.CellTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="" Width="70"/>
+                                                                </DataTemplate>
+                                                            </GridViewColumn.CellTemplate>
+                                                        </GridViewColumn>
+                                                        <GridViewColumn>
+                                                            <GridViewColumn.CellTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="{Binding Path=Value}" HorizontalAlignment="Right" Foreground="Black"/>
+                                                                </DataTemplate>
+                                                            </GridViewColumn.CellTemplate>
+                                                        </GridViewColumn>
+                                                    </GridView>
+                                                </ListView.View>
+                                            </ListView>
+                                        </Grid>
+                                    </ToolTip>
+                                </Image.ToolTip>
+                            </Image>
+                            <TextBlock Text="{Binding Path=amount}" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontWeight="Bold" FontFamily="Bazooka"/>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <!-- WTS Panel-->
+
+        <StackPanel Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
+            <TextBlock Text="Items marked WTS"/>
+            <Grid>
+                <TextBox Text="{Binding WtsSearch, UpdateSourceTrigger=PropertyChanged}" BorderBrush="Transparent"/>
+                <TextBlock Text="Search" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Visibility="{Binding WtsVis, UpdateSourceTrigger=PropertyChanged}" IsHitTestVisible="False" Margin="2,0,0,0" Foreground="Gray"/>
+            </Grid>
+        </StackPanel>
+        <ScrollViewer x:Name="WTSScroll" BorderBrush="Transparent" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="5" Background="#848484"  AllowDrop="True" Drop="DropToEvent">
+            <ItemsControl ItemsSource="{Binding Path=wts}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel ScrollViewer.CanContentScroll="True"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid x:Name="WTSGrid">
+                            <Image Source="{Binding Path=image}" Height="50" Width="50" MouseLeftButtonDown="DragFrom">
+                                <Image.ToolTip>
+                                    <ToolTip Background="#AAAAAA">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="1*"/>
+                                                <ColumnDefinition Width="1*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*"/>
+                                                <RowDefinition Height="1*"/>
+                                                <RowDefinition Height="1*"/>
+                                                <RowDefinition Height="1*"/>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Text="Name: " Grid.Column="0" Grid.Row="0" Foreground="Black" Margin="10,0,0,3"/>
+                                            <TextBlock Text="{Binding Path=name}" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right" Foreground="Black" Margin="0,0,10,3"/>
+                                            <TextBlock Text="Category: " Grid.Column="0" Grid.Row="1" Foreground="Black" Margin="10,0,0,3"/>
+                                            <TextBlock Text="{Binding Path=category}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" Foreground="Black" Margin="0,0,10,3"/>
+                                            <TextBlock Text="Game: " Grid.Column="0" Grid.Row="2" Foreground="Black" Margin="10,0,0,0"/>
+                                            <TextBlock Text="{Binding Path=game}" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" Foreground="Black" Margin="0,0,10,0"/>
+                                            <ListView ItemsSource="{Binding Path=stats}" Grid.Row="3" Grid.ColumnSpan="2" VerticalAlignment="Stretch" BorderBrush="Transparent" Background="#AAAAAA" Margin="0" Padding="0">
+                                                <ListView.View>
+                                                    <GridView>
+                                                        <GridView.ColumnHeaderContainerStyle>
+                                                            <Style TargetType="{x:Type GridViewColumnHeader}">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                            </Style>
+                                                        </GridView.ColumnHeaderContainerStyle>
+                                                        <GridViewColumn>
+                                                            <GridViewColumn.CellTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="{Binding Path=Key}" HorizontalAlignment="Stretch" Foreground="Black"/>
+                                                                </DataTemplate>
+                                                            </GridViewColumn.CellTemplate>
+                                                        </GridViewColumn>
+                                                        <GridViewColumn>
+                                                            <GridViewColumn.CellTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="" Width="70"/>
+                                                                </DataTemplate>
+                                                            </GridViewColumn.CellTemplate>
+                                                        </GridViewColumn>
+                                                        <GridViewColumn>
+                                                            <GridViewColumn.CellTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="{Binding Path=Value}" HorizontalAlignment="Right" Foreground="Black"/>
+                                                                </DataTemplate>
+                                                            </GridViewColumn.CellTemplate>
+                                                        </GridViewColumn>
+                                                    </GridView>
+                                                </ListView.View>
+                                            </ListView>
+                                        </Grid>
+                                    </ToolTip>
+                                </Image.ToolTip>
+                                <Image.ContextMenu>
+                                    <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource=    {RelativeSource Self}}">
+                                        <MenuItem Header="Unmark as WTS" Click="UnmarkAsWTS" />
+                                    </ContextMenu>
+                                </Image.ContextMenu>
+                            </Image>
+                            <TextBlock Text="{Binding Path=amount}" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+        <Button BorderBrush="Transparent" Content="Clear WTS" Grid.Column="5" Grid.Row="4" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,5,0,0" Padding="5,0,5,0" Click="ClearWTS"/>
+    </Grid>
+</UserControl>

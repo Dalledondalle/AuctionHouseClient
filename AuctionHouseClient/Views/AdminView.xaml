@@ -1,0 +1,13 @@
+﻿<Window x:Class="AuctionHouseClient.Views.AdminView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AuctionHouseClient.Views"
+        mc:Ignorable="d"
+        Title="AdminView" Height="450" Width="800">
+    <Grid>
+        <TextBlock Text="{Binding Username}" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="10" FontSize="20"/>
+        <Button Background="#A8A8A8" Content="Debug Test Gameitems" Click="DebugTest_Click" Width="200" Height="20"/>
+    </Grid>
+</Window>

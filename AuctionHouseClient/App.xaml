@@ -1,0 +1,17 @@
+﻿<Application x:Class="AuctionHouseClient.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:AuctionHouseClient"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <Style TargetType="{x:Type Window}">
+            <Setter Property="FontFamily"
+                    Value="/AuctionHouseClient;component/Font/#Bazooka"/>
+        </Style>
+        <Style TargetType="{x:Type UserControl}">
+            <Setter Property="FontFamily"
+                    Value="/AuctionHouseClient;component/Font/#Bazooka"/>
+        </Style>
+         
+    </Application.Resources>
+</Application>
