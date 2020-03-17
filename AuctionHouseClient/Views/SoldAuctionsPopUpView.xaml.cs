@@ -1,4 +1,5 @@
 ﻿using AuctionHouseClient.Shared;
+using AuctionHouseClient.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,13 +19,12 @@ using System.Windows.Shapes;
 
 namespace AuctionHouseClient.Views
 {
-    /// <summary>
-    /// Interaction logic for SoldAuctionsPopUpView.xaml
-    /// </summary>
     public partial class SoldAuctionsPopUpView : Window, INotifyPropertyChanged
     {
-        ObservableCollection<Mail> mailList;
-        ObservableCollection<Mail> MailList
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private ObservableCollection<Mail> mailList;
+        public ObservableCollection<Mail> MailList
         {
             get
             {
@@ -38,8 +38,6 @@ namespace AuctionHouseClient.Views
         }
         DBConn db;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         private void OnPropertyChanged(string v)
         {
             if (this.PropertyChanged != null)
@@ -50,6 +48,7 @@ namespace AuctionHouseClient.Views
 
         public SoldAuctionsPopUpView(DBConn _db)
         {
+            mailList = new ObservableCollection<Mail>();
             db = _db;
             InitializeComponent();
             DataContext = this;
@@ -57,20 +56,61 @@ namespace AuctionHouseClient.Views
 
         private void ClaimAll_Click(object sender, RoutedEventArgs e)
         {
-            mailList = new ObservableCollection<Mail>();
-            mailList.Add(new Mail(db) { ContainedItem = db.GetItem(12), Claimed = false, Message = "Item one", RecievedDate = new DateTime(2020, 03, 11), Seen = false });
-            mailList.Add(new Mail(db) { ContainedItem = db.GetItem(5), Claimed = false, Message = "Item two", RecievedDate = new DateTime(2020, 03, 09), Seen = false });
-            mailList.Add(new Mail(db) { ContainedItem = db.GetItem(20), Claimed = true, Message = "Item three", RecievedDate = new DateTime(2020, 03, 07), Seen = true });
-            //MailListView.ItemsSource = mails;
-            foreach (Mail m in MailList)
-            {
-                Debug.WriteLine(m.ContainedItem.name);
-            }
+            ClaimAll();
         }
 
         private void Close_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void ClaimAll()
+        {
+            foreach(Mail m in MailList)
+            {
+                if (!m.Claimed)
+                {
+                    db.ClaimSingle(m);
+                    m.Seen = true;
+                    m.Claimed = true;
+                }
+            }
+            RefreshMail();
+        }
+
+        public void RefreshMail()
+        {
+            mailList.Clear();
+            ObservableCollection<Mail> temp = db.GetMails();
+            foreach(Mail m in temp)
+            {
+                mailList.Add(m);
+            }
+        }
+        private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (Mouse.LeftButton == MouseButtonState.Pressed)
+            {
+                if (this.WindowState == WindowState.Maximized)
+                {
+                    this.WindowState = WindowState.Normal;
+                    Application.Current.MainWindow.Top = 3;
+                }
+                this.DragMove();
+            }
+        }
+
+        private void ClaimSingle_Click(object sender, RoutedEventArgs e)
+        {
+            ClaimSingle(sender);
+        }
+
+        private void ClaimSingle(object sender)
+        {
+            Mail m = (((sender as Button).Parent as Grid).DataContext as Mail);
+            db.ClaimSingle(m);
+            m.Seen = true;
+            m.Claimed = true;
         }
     }
 }

@@ -51,7 +51,7 @@
 
             <ListView Background="#848484" BorderBrush="Transparent" ItemsSource="{Binding PostedList, UpdateSourceTrigger=PropertyChanged}" 
                       x:Name="ListViewSearched" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5" Grid.RowSpan="1" AlternationCount="2" 
-                      HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                      HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" SelectedItem="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Grid HorizontalAlignment="Stretch">
@@ -118,7 +118,7 @@
                 </ListView.ItemTemplate>
             </ListView>
         </Grid>
-        <Button BorderBrush="Transparent" Content="Cancel Auction" Grid.Column="4" Grid.ColumnSpan="1" Grid.Row="2" Margin="1,3,0,0" VerticalAlignment="Top" HorizontalAlignment="Stretch" />
+        <Button BorderBrush="Transparent" Content="Cancel Auction" Grid.Column="4" Grid.ColumnSpan="1" Grid.Row="2" Margin="1,3,0,0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Click="CancelAuction_Click" />
         <Button BorderBrush="Transparent" Content="Mails" Grid.Column="3" Grid.ColumnSpan="1" Grid.Row="2" Margin="0,3,1,0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Click="Mails_Click" />
         <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
             <StackPanel>

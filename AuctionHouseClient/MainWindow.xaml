@@ -14,23 +14,6 @@
         WindowStyle="None"
         AllowsTransparency="True"
         ResizeMode="CanResizeWithGrip">
-    <Window.Resources>
-        <DataTemplate x:Name="MyAuctionsViewTemplate" DataType="{x:Type viewmodels:MyAuctionsModel}">
-            <views:MyAuctionsView DataContext="{Binding}"/>
-        </DataTemplate>
-        <DataTemplate x:Name="MyInventoryViewTemplate" DataType="{x:Type viewmodels:MyInventoryModel}">
-            <views:MyInventoryView DataContext="{Binding}"/>
-        </DataTemplate>
-        <DataTemplate x:Name="PostAuctionsViewTemplate" DataType="{x:Type viewmodels:PostAuctionsModel}">
-            <views:PostAuctionsView DataContext="{Binding}"/>
-        </DataTemplate>
-        <DataTemplate x:Name="SearchAuctionsViewTemplate" DataType="{x:Type viewmodels:SearchAuctionModel}">
-            <views:SearchAuctionsView DataContext="{Binding}"/>
-        </DataTemplate>
-        <DataTemplate x:Name="LoginViewTemplate" DataType="{x:Type viewmodels:LoginModel}">
-            <views:LoginView DataContext="{Binding}"/>
-        </DataTemplate>
-    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -48,7 +31,7 @@
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Grid Background="#8B8B8B" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MouseDown="Grid_MouseDown" >
+        <Grid Background="#8B8B8B" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MouseDown="Grid_MouseDown">
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="5*"/>

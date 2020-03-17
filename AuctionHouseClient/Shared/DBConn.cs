@@ -594,5 +594,50 @@ namespace AuctionHouseClient.Shared
             cmd.ExecuteNonQuery();
             cmd.Dispose();
         }
+
+        public ObservableCollection<Mail> GetMails()
+        {
+            ObservableCollection<Mail> collect = new ObservableCollection<Mail>();
+            SqlCommand command = new SqlCommand("exec getMails @userid", conn);
+            command.Parameters.AddWithValue("@userid", userID);
+            using (SqlDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    collect.Add(new Mail(this) {    id = int.Parse(reader.GetValue(0).ToString()),
+                                                    Itemid = int.Parse(reader.GetValue(2).ToString()),
+                                                    amount = int.Parse(reader.GetValue(3).ToString()),
+                                                    RecievedDate = (DateTime)reader.GetValue(4),
+                                                    Message = (string)reader.GetValue(5),
+                                                    Claimed = (bool)reader.GetValue(6),
+                                                    Seen = (bool)reader.GetValue(7)
+                    }) ;
+                }
+            }
+            foreach(Mail m in collect)
+            {
+                m.RefreshItem();
+            }
+            return collect;
+        }
+
+        public void ClaimSingle(Mail mail)
+        {
+            SqlCommand cmd = new SqlCommand("exec ClaimMail @mailid", conn);
+            cmd.Parameters.AddWithValue("@mailid", mail.id);
+            cmd.CommandType = CommandType.Text;
+            cmd.ExecuteNonQuery();
+            cmd.Dispose();
+        }
+
+        public void CancelAuction(Auction auction)
+        {
+            SqlCommand cmd = new SqlCommand("exec CancelAuction @auctionID , @msg", conn);
+            cmd.Parameters.AddWithValue("@auctionID", auction.AuctionId);
+            cmd.Parameters.AddWithValue("@msg", "Auction Canceled");
+            cmd.CommandType = CommandType.Text;
+            cmd.ExecuteNonQuery();
+            cmd.Dispose();
+        }
     }
 }

@@ -44,6 +44,18 @@ namespace AuctionHouseClient.Views
             }
         }
 
+        Auction selectedItem;
+        public Auction SelectedItem {
+            get
+            {
+                return selectedItem;
+            }
+            set
+            {
+                selectedItem = value;
+            }
+        }
+
         private void OnPropertyChanged(string v)
         {
             if (this.PropertyChanged != null)
@@ -163,7 +175,12 @@ namespace AuctionHouseClient.Views
         public void FillPosts()
         {
             postedList.Clear();
-            postedList = db.GetPostedList();
+            ObservableCollection<Auction> t;
+            t = db.GetPostedList();
+            foreach (Auction a in t)
+            {
+                postedList.Add(a);
+            }
         }
         private void FixDic(string s)
         {
@@ -182,7 +199,15 @@ namespace AuctionHouseClient.Views
         private void OpenMailWindow()
         {
             soldAuctionsPopUpView = new SoldAuctionsPopUpView(db);
+            soldAuctionsPopUpView.RefreshMail();
             soldAuctionsPopUpView.Show();
+        }
+
+        private void CancelAuction_Click(object sender, RoutedEventArgs e)
+        {
+            db.CancelAuction(SelectedItem);
+            FillPosts();
+            return;
         }
     }
 }
