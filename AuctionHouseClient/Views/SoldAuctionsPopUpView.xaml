@@ -46,7 +46,7 @@
                         <TextBlock Text="{Binding Path=ContainedItem.name}" TextWrapping="Wrap" Grid.Column="0" HorizontalAlignment="Stretch"/>
                         <TextBlock Text="{Binding Path=ShownDate}" TextWrapping="Wrap" Grid.Column="1" HorizontalAlignment="Stretch"/>
                         <TextBlock Text="{Binding Path=ContainedItem.amount}" TextWrapping="Wrap" Grid.Column="2" HorizontalAlignment="Stretch"/>
-                        <Button Content="Claim" HorizontalContentAlignment="Center" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Stretch" Click="ClaimSingle_Click"/>
+                        <Button Content="Claim" IsEnabled="{Binding Path=Claimed}" Opacity="{Binding Path=Alpha}" HorizontalContentAlignment="Center" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Stretch" Click="ClaimSingle_Click"/>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>

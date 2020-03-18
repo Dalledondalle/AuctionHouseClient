@@ -22,6 +22,7 @@ namespace AuctionHouseClient.Views
     public partial class SoldAuctionsPopUpView : Window, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
+        public static event EventHandler<PropertyChangedEventArgs> StaticPropertyChanged;
 
         private ObservableCollection<Mail> mailList;
         public ObservableCollection<Mail> MailList
@@ -111,6 +112,8 @@ namespace AuctionHouseClient.Views
             db.ClaimSingle(m);
             m.Seen = true;
             m.Claimed = true;
+            m.Alpha = 0.5f;
+            RefreshMail();
         }
     }
 }

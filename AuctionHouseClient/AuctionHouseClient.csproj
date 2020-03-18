@@ -66,9 +66,12 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Shared\Auction.cs" />
+    <Compile Include="Shared\BagItem.cs" />
+    <Compile Include="Shared\BankItem.cs" />
     <Compile Include="Shared\DBConn.cs" />
     <Compile Include="Shared\GameItem.cs" />
     <Compile Include="Shared\GameItemCollection.cs" />
+    <Compile Include="Shared\InventoryItem.cs" />
     <Compile Include="Shared\Mail.cs" />
     <Compile Include="Shared\PlayerBank.cs" />
     <Compile Include="Shared\PlayerInventory.cs" />

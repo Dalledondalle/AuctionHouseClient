@@ -23,6 +23,7 @@ namespace AuctionHouseClient.Shared
                 return username;
             }
         }
+
         private int userID;
         public int UserID
         {
@@ -117,19 +118,6 @@ namespace AuctionHouseClient.Shared
         }
 
         //Updated for new DB
-        public void MarkAsWts(GameItem g)
-        {
-            //OpenConn();
-            SqlCommand command = new SqlCommand("exec MarkForWts @userID, @itemID, @amount", conn);
-            command.Parameters.AddWithValue("@userID", userID);
-            command.Parameters.AddWithValue("@itemID", g.id);
-            command.Parameters.AddWithValue("@amount", g.amount);
-            command.CommandType = CommandType.Text;
-            command.ExecuteNonQuery();
-            command.Dispose();
-        }
-
-        //Updated for new DB
         public string GetUsername(int userid)
         {
             //OpenConn();
@@ -153,14 +141,15 @@ namespace AuctionHouseClient.Shared
         public void InsertIntoTable(int itemID, int amount = 1, bool bank = false)
         {
             //OpenConn();
-            SqlCommand command = new SqlCommand("Insert into inventory (userid, itemid, amount, bank, wts) values(@userid, @gameitemid, @amount, @bank, 0)", conn);
-            command.Parameters.AddWithValue("@userid", userID);
-            command.Parameters.AddWithValue("@gameitemid", itemID);
-            command.Parameters.AddWithValue("@amount", amount);
-            command.Parameters.AddWithValue("@bank", bank);
-            command.CommandType = CommandType.Text;
-            command.ExecuteNonQuery();
-            command.Dispose();
+            //SqlCommand command = new SqlCommand("Insert into inventory (userid, itemid, amount, bank, wts) values(@userid, @gameitemid, @amount, @bank, 0)", conn);
+            //command.Parameters.AddWithValue("@userid", userID);
+            //command.Parameters.AddWithValue("@gameitemid", itemID);
+            //command.Parameters.AddWithValue("@amount", amount);
+            //command.Parameters.AddWithValue("@bank", bank);
+            //command.CommandType = CommandType.Text;
+            //command.ExecuteNonQuery();
+            //command.Dispose();
+            return;
         }
 
         //Updated for new DB (Need optimizing)
@@ -199,26 +188,22 @@ namespace AuctionHouseClient.Shared
         }
 
         //Updated for new DB
-        public void MoveToBank(GameItem gameitem)
+        public void MoveToBank(BagItem bagitem)
         {
             //OpenConn();
-            SqlCommand cmd = new SqlCommand("exec MoveToBank @userid, @itemid, @amount", conn);
-            cmd.Parameters.AddWithValue("@userid", userID);
-            cmd.Parameters.AddWithValue("@itemid", gameitem.id);
-            cmd.Parameters.AddWithValue("@amount", gameitem.amount);
+            SqlCommand cmd = new SqlCommand("exec MoveToBank @id", conn);
+            cmd.Parameters.AddWithValue("@id", bagitem.id);
             cmd.CommandType = CommandType.Text;
             cmd.ExecuteNonQuery();
             cmd.Dispose();
         }
 
         //Updated for new DB
-        public void MoveToBag(GameItem gameitem)
+        public void MoveToBag(BankItem bankitem)
         {
             //OpenConn();
-            SqlCommand cmd = new SqlCommand("exec MoveToBag @userid, @itemid, @amount", conn);
-            cmd.Parameters.AddWithValue("@userid", userID);
-            cmd.Parameters.AddWithValue("@itemid", gameitem.id);
-            cmd.Parameters.AddWithValue("@amount", gameitem.amount);
+            SqlCommand cmd = new SqlCommand("exec MoveToBag @id, @itemid, @amount", conn);
+            cmd.Parameters.AddWithValue("@id", bankitem.id);
             cmd.CommandType = CommandType.Text;
             cmd.ExecuteNonQuery();
             cmd.Dispose();
@@ -402,179 +387,60 @@ namespace AuctionHouseClient.Shared
         }
 
         //Updated for new DB
-        public ObservableCollection<GameItem> GetBank()
+        public ObservableCollection<BankItem> GetBank()
         {
             //OpenConn();
-            ObservableCollection<GameItem> collection = new ObservableCollection<GameItem>();
-            SqlCommand command = new SqlCommand("exec getbank @userid", conn);
+            ObservableCollection<BankItem> collection = new ObservableCollection<BankItem>();
+            SqlCommand command = new SqlCommand("Exec GetBank @userid", conn);
             command.Parameters.AddWithValue("@userid", userID);
             using (SqlDataReader reader = command.ExecuteReader())
             {
                 while(reader.Read())
                 {
-                    int id = 0;
-                    if (reader.GetValue(0) != null) id = int.Parse(reader.GetValue(0).ToString());
-
-                    string name = reader.GetValue(4).ToString();
-                    string game = reader.GetValue(5).ToString();
-                    string category = reader.GetValue(6).ToString();
-                    string description = reader.GetValue(7).ToString();
-
-                    int sta = 0;
-                    if (reader.GetValue(8).ToString() != "" && reader.FieldCount > 8) sta = int.Parse(reader.GetValue(8).ToString());
-
-                    int intel = 0;
-                    if (reader.GetValue(9).ToString() != "" && reader.FieldCount > 9) intel = int.Parse(reader.GetValue(9).ToString());
-
-                    int agi = 0;
-                    if (reader.GetValue(10).ToString() != "" && reader.FieldCount > 10) agi = int.Parse(reader.GetValue(10).ToString());
-
-                    int str = 0;
-                    if (reader.GetValue(11).ToString() != "" && reader.FieldCount > 11) str = int.Parse(reader.GetValue(11).ToString());
-
-                    int haste = 0;
-                    if (reader.GetValue(12).ToString() != "" && reader.FieldCount > 12) haste = int.Parse(reader.GetValue(12).ToString());
-
-                    int crit = 0;
-                    if (reader.GetValue(13).ToString() != "" && reader.FieldCount > 13) crit = int.Parse(reader.GetValue(13).ToString());
-
-                    int vers = 0;
-                    if (reader.GetValue(14).ToString() != "" && reader.FieldCount > 14) vers = int.Parse(reader.GetValue(14).ToString());
-
-                    int spellpower = 0;
-                    if (reader.GetValue(15).ToString() != "" && reader.FieldCount > 15) spellpower = int.Parse(reader.GetValue(15).ToString());
-
-                    int amount = (int)reader.GetValue(1);
-
-                    bool wts = (bool)reader.GetValue(3);
-
-                    GameItem g = new GameItem(id, name, game, category, description,
-                                                sta, intel, agi, str, haste, crit, vers, spellpower);
-                    g.amount = amount;
-                    g.wts = wts;
-
-                    collection.Add(g);
+                    collection.Add(new BankItem
+                    {
+                        id = (int)reader.GetValue(0),
+                        Itemid = (int)reader.GetValue(2),
+                        Amount = (int)reader.GetValue(3),
+                        Wts = (bool)reader.GetValue(4),
+                        db = this
+                    });
                 }
             }
             command.Dispose();
+            foreach (BankItem b in collection)
+            {
+                b.RefreshItem();
+            }
             return collection;
         }
 
         //Updated for new DB
-        public ObservableCollection<GameItem> GetBag()
+        public ObservableCollection<BagItem> GetBag()
         {
             //OpenConn();
-            ObservableCollection<GameItem> collection = new ObservableCollection<GameItem>();
-            SqlCommand command = new SqlCommand("exec getbag @userid", conn);
+            ObservableCollection<BagItem> collection = new ObservableCollection<BagItem>();
+            SqlCommand command = new SqlCommand("Exec GetBag @userid", conn);
             command.Parameters.AddWithValue("@userid", userID);
             using (SqlDataReader reader = command.ExecuteReader())
             {
                 while (reader.Read())
                 {
-                    int id = 0;
-                    if (reader.GetValue(0) != null) id = int.Parse(reader.GetValue(0).ToString());
-
-                    string name = reader.GetValue(4).ToString();
-                    string game = reader.GetValue(5).ToString();
-                    string category = reader.GetValue(6).ToString();
-                    string description = reader.GetValue(7).ToString();
-
-                    int sta = 0;
-                    if (reader.GetValue(8).ToString() != "" && reader.FieldCount > 8) sta = int.Parse(reader.GetValue(8).ToString());
-
-                    int intel = 0;
-                    if (reader.GetValue(9).ToString() != "" && reader.FieldCount > 9) intel = int.Parse(reader.GetValue(9).ToString());
-
-                    int agi = 0;
-                    if (reader.GetValue(10).ToString() != "" && reader.FieldCount > 10) agi = int.Parse(reader.GetValue(10).ToString());
-
-                    int str = 0;
-                    if (reader.GetValue(11).ToString() != "" && reader.FieldCount > 11) str = int.Parse(reader.GetValue(11).ToString());
-
-                    int haste = 0;
-                    if (reader.GetValue(12).ToString() != "" && reader.FieldCount > 12) haste = int.Parse(reader.GetValue(12).ToString());
-
-                    int crit = 0;
-                    if (reader.GetValue(13).ToString() != "" && reader.FieldCount > 13) crit = int.Parse(reader.GetValue(13).ToString());
-
-                    int vers = 0;
-                    if (reader.GetValue(14).ToString() != "" && reader.FieldCount > 14) vers = int.Parse(reader.GetValue(14).ToString());
-
-                    int spellpower = 0;
-                    if (reader.GetValue(15).ToString() != "" && reader.FieldCount > 15) spellpower = int.Parse(reader.GetValue(15).ToString());
-
-                    int amount = (int)reader.GetValue(1);
-
-                    bool wts = (bool)reader.GetValue(3);
-
-                    GameItem g = new GameItem(id, name, game, category, description,
-                                                sta, intel, agi, str, haste, crit, vers, spellpower);
-                    g.amount = amount;
-                    g.wts = wts;
-
-                    collection.Add(g);
+                    collection.Add(new BagItem
+                    {
+                        id = (int)reader.GetValue(0),
+                        Itemid = (int)reader.GetValue(2),
+                        Amount = (int)reader.GetValue(3),
+                        Wts = (bool)reader.GetValue(4),
+                        db = this
+                    });
                 }
             }
             command.Dispose();
-            return collection;
-        }
-
-        //Updated for new DB
-        public ObservableCollection<GameItem> GetWts()
-        {
-            ObservableCollection<GameItem> collection = new ObservableCollection<GameItem>();
-            //OpenConn();
-            SqlCommand command = new SqlCommand("exec getwts @userid", conn);
-            command.Parameters.AddWithValue("@userid", userID);
-            using (SqlDataReader reader = command.ExecuteReader())
+            foreach (BagItem b in collection)
             {
-                while (reader.Read())
-                {
-                    int id = 0;
-                    if (reader.GetValue(0) != null) id = int.Parse(reader.GetValue(0).ToString());
-
-                    string name = reader.GetValue(4).ToString();
-                    string game = reader.GetValue(5).ToString();
-                    string category = reader.GetValue(6).ToString();
-                    string description = reader.GetValue(7).ToString();
-
-                    int sta = 0;
-                    if (reader.GetValue(8).ToString() != "" && reader.FieldCount > 8) sta = int.Parse(reader.GetValue(8).ToString());
-
-                    int intel = 0;
-                    if (reader.GetValue(9).ToString() != "" && reader.FieldCount > 9) intel = int.Parse(reader.GetValue(9).ToString());
-
-                    int agi = 0;
-                    if (reader.GetValue(10).ToString() != "" && reader.FieldCount > 10) agi = int.Parse(reader.GetValue(10).ToString());
-
-                    int str = 0;
-                    if (reader.GetValue(11).ToString() != "" && reader.FieldCount > 11) str = int.Parse(reader.GetValue(11).ToString());
-
-                    int haste = 0;
-                    if (reader.GetValue(12).ToString() != "" && reader.FieldCount > 12) haste = int.Parse(reader.GetValue(12).ToString());
-
-                    int crit = 0;
-                    if (reader.GetValue(13).ToString() != "" && reader.FieldCount > 13) crit = int.Parse(reader.GetValue(13).ToString());
-
-                    int vers = 0;
-                    if (reader.GetValue(14).ToString() != "" && reader.FieldCount > 14) vers = int.Parse(reader.GetValue(14).ToString());
-
-                    int spellpower = 0;
-                    if (reader.GetValue(15).ToString() != "" && reader.FieldCount > 15) spellpower = int.Parse(reader.GetValue(15).ToString());
-
-                    int amount = (int)reader.GetValue(1);
-
-                    bool wts = (bool)reader.GetValue(3);
-
-                    GameItem g = new GameItem(id, name, game, category, description,
-                                                sta, intel, agi, str, haste, crit, vers, spellpower);
-                    g.amount = amount;
-                    g.wts = wts;
-
-                    collection.Add(g);
-                }
+                b.RefreshItem();
             }
-            command.Dispose();
             return collection;
         }
 
@@ -635,6 +501,24 @@ namespace AuctionHouseClient.Shared
             SqlCommand cmd = new SqlCommand("exec CancelAuction @auctionID , @msg", conn);
             cmd.Parameters.AddWithValue("@auctionID", auction.AuctionId);
             cmd.Parameters.AddWithValue("@msg", "Auction Canceled");
+            cmd.CommandType = CommandType.Text;
+            cmd.ExecuteNonQuery();
+            cmd.Dispose();
+        }
+
+        public void MarkBag(InventoryItem inventoryItem)
+        {
+            SqlCommand cmd = new SqlCommand("exec MarkBag @id", conn);
+            cmd.Parameters.AddWithValue("@id", inventoryItem.id);
+            cmd.CommandType = CommandType.Text;
+            cmd.ExecuteNonQuery();
+            cmd.Dispose();
+        }
+
+        public void MarkBank(InventoryItem inventoryItem)
+        {
+            SqlCommand cmd = new SqlCommand("exec MarkBank @id", conn);
+            cmd.Parameters.AddWithValue("@id", inventoryItem.id);
             cmd.CommandType = CommandType.Text;
             cmd.ExecuteNonQuery();
             cmd.Dispose();
