@@ -46,7 +46,7 @@ namespace AuctionHouseClient.Views
 
         private PostingPopUpView PostPopUpView;
         public bool QuickSearch { get; set; }
-        public GameItem itemToLookUp { get; set; }
+        public InventoryItem itemToLookUp { get; set; }
 
         private static double postBottomOpacity;
         public static double PostBottomOpacity
@@ -82,6 +82,33 @@ namespace AuctionHouseClient.Views
             }
         }
 
+        private RegularCurrency regular;
+        public RegularCurrency Regular
+        {
+            get
+            {
+                return regular;
+            }
+            set
+            {
+                regular = value;
+                OnPropertyChanged("Regular");
+            }
+        }
+        private PremiumCurrency premium;
+        public PremiumCurrency Premium
+        {
+            get
+            {
+                return premium;
+            }
+            set
+            {
+                premium = value;
+                OnPropertyChanged("Premium");
+            }
+        }
+
         public DBConn db { get; set; }
 
         private Dictionary<string, bool> sorted;
@@ -106,8 +133,9 @@ namespace AuctionHouseClient.Views
             if (StaticPropertyChanged != null)
                 StaticPropertyChanged(null, new PropertyChangedEventArgs(v));
         }
-        public SearchedAuctionsView()
-        { 
+        public SearchedAuctionsView(DBConn _db)
+        {
+            db = _db;
             PostBottomOpacity = 1.0;
             sorted = new Dictionary<string, bool>();
             sorted.Add("name", false);
@@ -117,6 +145,8 @@ namespace AuctionHouseClient.Views
             sorted.Add("seller", false);
             sorted.Add("amount", false);
             SearchedList = new ObservableCollection<Auction>();
+            Regular = db.GetRegularCurrency();
+            Premium = db.GetPremiumCurrency();
             InitializeComponent();
             //DataContext = new SearchedAuctionsModel();
         }

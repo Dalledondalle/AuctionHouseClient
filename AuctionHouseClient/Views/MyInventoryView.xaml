@@ -34,7 +34,7 @@
         <TextBox Text="{Binding InventorySearch, UpdateSourceTrigger=PropertyChanged}" BorderBrush="Transparent" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"/>
         <TextBlock Text="Search" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Visibility="{Binding InvVis, UpdateSourceTrigger=PropertyChanged}" IsHitTestVisible="False" Margin="2,0,0,0" Foreground="Gray"/>
         <ScrollViewer x:Name="InvScroll" BorderBrush="Transparent" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Background="#848484" AllowDrop="True" Drop="DropToEvent">
-            <ItemsControl ItemsSource="{Binding Path=inventory}">
+            <ItemsControl ItemsSource="{Binding Path=Bag}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel ScrollViewer.CanContentScroll="True"/>
@@ -43,7 +43,7 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid x:Name="InvGrid">
-                            <Image Source="{Binding Path=image}" Height="50" Width="50" MouseLeftButtonDown="DragFrom">
+                            <Image Source="{Binding Path=ContainedItem.image}" Height="50" Width="50" MouseLeftButtonDown="DragFrom">
                                 <Image.ContextMenu>
                                     <ContextMenu x:Name="InvMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource=    {RelativeSource Self}}">
                                         <MenuItem Header="Move to bank" Click="FromInventoryToBank"/>
@@ -64,12 +64,12 @@
                                                 <RowDefinition Height="1*"/>
                                             </Grid.RowDefinitions>
                                             <TextBlock Text="Name: " Grid.Column="0" Grid.Row="0" Foreground="Black" Margin="10,0,0,3"/>
-                                            <TextBlock Text="{Binding Path=name}" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right" Foreground="Black" Margin="0,0,10,3"/>
+                                            <TextBlock Text="{Binding Path=ContainedItem.name}" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right" Foreground="Black" Margin="0,0,10,3"/>
                                             <TextBlock Text="Category: " Grid.Column="0" Grid.Row="1" Foreground="Black" Margin="10,0,0,3"/>
-                                            <TextBlock Text="{Binding Path=category}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" Foreground="Black" Margin="0,0,10,3"/>
+                                            <TextBlock Text="{Binding Path=ContainedItem.category}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" Foreground="Black" Margin="0,0,10,3"/>
                                             <TextBlock Text="Game: " Grid.Column="0" Grid.Row="2" Foreground="Black" Margin="10,0,0,0"/>
-                                            <TextBlock Text="{Binding Path=game}" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" Foreground="Black" Margin="0,0,10,0"/>
-                                            <ListView ItemsSource="{Binding Path=stats}" Grid.Row="3" Grid.ColumnSpan="2" VerticalAlignment="Stretch" BorderBrush="Transparent" Background="#AAAAAA" Margin="0" Padding="0">
+                                            <TextBlock Text="{Binding Path=ContainedItem.game}" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" Foreground="Black" Margin="0,0,10,0"/>
+                                            <ListView ItemsSource="{Binding Path=ContainedItem.stats}" Grid.Row="3" Grid.ColumnSpan="2" VerticalAlignment="Stretch" BorderBrush="Transparent" Background="#AAAAAA" Margin="0" Padding="0">
                                                 <ListView.View>
                                                     <GridView>
                                                         <GridView.ColumnHeaderContainerStyle>
@@ -105,7 +105,7 @@
                                     </ToolTip>
                                 </Image.ToolTip>
                             </Image>
-                            <TextBlock Text="{Binding Path=amount}" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+                            <TextBlock Text="{Binding Path=Amount}" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
@@ -117,7 +117,7 @@
         <TextBox Text="{Binding BankSearch, UpdateSourceTrigger=PropertyChanged}" BorderBrush="Transparent" Grid.Row="0" Grid.Column="5" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"/>
         <TextBlock Text="Search" Grid.Row="0" Grid.Column="5" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Visibility="{Binding BankVis, UpdateSourceTrigger=PropertyChanged}" IsHitTestVisible="False" Margin="2,0,0,0" Foreground="Gray"/>
         <ScrollViewer x:Name="BankScroll" BorderBrush="Transparent" Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="2" Background="#848484" AllowDrop="True" Drop="DropToEvent">
-            <ItemsControl ItemsSource="{Binding Path=bank}">
+            <ItemsControl ItemsSource="{Binding Path=Bank}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel ScrollViewer.CanContentScroll="True"/>
@@ -126,9 +126,9 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid x:Name="BankGrid">
-                            <Image Source="{Binding Path=image}" Height="50" Width="50" MouseLeftButtonDown="DragFrom">
+                            <Image Source="{Binding Path=ContainedItem.image}" Height="50" Width="50" MouseLeftButtonDown="DragFrom">
                                 <Image.ContextMenu>
-                                    <ContextMenu x:Name="BankMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource=    {RelativeSource Self}}">
+                                    <ContextMenu x:Name="BankMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
                                         <MenuItem Header="Move to Inventory" Click="FromBankyToInventory" />
                                         <MenuItem Header="Mark as WTS" Click="MarkAsWTS"/>
                                     </ContextMenu>
@@ -147,12 +147,12 @@
                                                 <RowDefinition Height="1*"/>
                                             </Grid.RowDefinitions>
                                             <TextBlock Text="Name: " Grid.Column="0" Grid.Row="0" Foreground="Black" Margin="10,0,0,3"/>
-                                            <TextBlock Text="{Binding Path=name}" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right" Foreground="Black" Margin="0,0,10,3"/>
+                                            <TextBlock Text="{Binding Path=ContainedItem.name}" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right" Foreground="Black" Margin="0,0,10,3"/>
                                             <TextBlock Text="Category: " Grid.Column="0" Grid.Row="1" Foreground="Black" Margin="10,0,0,3"/>
-                                            <TextBlock Text="{Binding Path=category}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" Foreground="Black" Margin="0,0,10,3"/>
+                                            <TextBlock Text="{Binding Path=ContainedItem.category}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" Foreground="Black" Margin="0,0,10,3"/>
                                             <TextBlock Text="Game: " Grid.Column="0" Grid.Row="2" Foreground="Black" Margin="10,0,0,0"/>
-                                            <TextBlock Text="{Binding Path=game}" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" Foreground="Black" Margin="0,0,10,0"/>
-                                            <ListView ItemsSource="{Binding Path=stats}" Grid.Row="3" Grid.ColumnSpan="2" VerticalAlignment="Stretch" BorderBrush="Transparent" Background="#AAAAAA" Margin="0" Padding="0">
+                                            <TextBlock Text="{Binding Path=ContainedItem.game}" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" Foreground="Black" Margin="0,0,10,0"/>
+                                            <ListView ItemsSource="{Binding Path=ContainedItem.stats}" Grid.Row="3" Grid.ColumnSpan="2" VerticalAlignment="Stretch" BorderBrush="Transparent" Background="#AAAAAA" Margin="0" Padding="0">
                                                 <ListView.View>
                                                     <GridView>
                                                         <GridView.ColumnHeaderContainerStyle>
@@ -188,7 +188,7 @@
                                     </ToolTip>
                                 </Image.ToolTip>
                             </Image>
-                            <TextBlock Text="{Binding Path=amount}" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontWeight="Bold" FontFamily="Bazooka"/>
+                            <TextBlock Text="{Binding Path=Amount}" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontWeight="Bold" FontFamily="Bazooka"/>
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
@@ -205,7 +205,7 @@
             </Grid>
         </StackPanel>
         <ScrollViewer x:Name="WTSScroll" BorderBrush="Transparent" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="5" Background="#848484"  AllowDrop="True" Drop="DropToEvent">
-            <ItemsControl ItemsSource="{Binding Path=wts}">
+            <ItemsControl ItemsSource="{Binding Path=Wts}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel ScrollViewer.CanContentScroll="True"/>
@@ -214,7 +214,7 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid x:Name="WTSGrid">
-                            <Image Source="{Binding Path=image}" Height="50" Width="50" MouseLeftButtonDown="DragFrom">
+                            <Image Source="{Binding Path=ContainedItem.image}" Height="50" Width="50" MouseLeftButtonDown="DragFrom">
                                 <Image.ToolTip>
                                     <ToolTip Background="#AAAAAA">
                                         <Grid>
@@ -229,12 +229,12 @@
                                                 <RowDefinition Height="1*"/>
                                             </Grid.RowDefinitions>
                                             <TextBlock Text="Name: " Grid.Column="0" Grid.Row="0" Foreground="Black" Margin="10,0,0,3"/>
-                                            <TextBlock Text="{Binding Path=name}" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right" Foreground="Black" Margin="0,0,10,3"/>
+                                            <TextBlock Text="{Binding Path=ContainedItem.name}" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right" Foreground="Black" Margin="0,0,10,3"/>
                                             <TextBlock Text="Category: " Grid.Column="0" Grid.Row="1" Foreground="Black" Margin="10,0,0,3"/>
-                                            <TextBlock Text="{Binding Path=category}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" Foreground="Black" Margin="0,0,10,3"/>
+                                            <TextBlock Text="{Binding Path=ContainedItem.category}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Right" Foreground="Black" Margin="0,0,10,3"/>
                                             <TextBlock Text="Game: " Grid.Column="0" Grid.Row="2" Foreground="Black" Margin="10,0,0,0"/>
-                                            <TextBlock Text="{Binding Path=game}" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" Foreground="Black" Margin="0,0,10,0"/>
-                                            <ListView ItemsSource="{Binding Path=stats}" Grid.Row="3" Grid.ColumnSpan="2" VerticalAlignment="Stretch" BorderBrush="Transparent" Background="#AAAAAA" Margin="0" Padding="0">
+                                            <TextBlock Text="{Binding Path=ContainedItem.game}" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" Foreground="Black" Margin="0,0,10,0"/>
+                                            <ListView ItemsSource="{Binding Path=ContainedItem.stats}" Grid.Row="3" Grid.ColumnSpan="2" VerticalAlignment="Stretch" BorderBrush="Transparent" Background="#AAAAAA" Margin="0" Padding="0">
                                                 <ListView.View>
                                                     <GridView>
                                                         <GridView.ColumnHeaderContainerStyle>
@@ -270,12 +270,12 @@
                                     </ToolTip>
                                 </Image.ToolTip>
                                 <Image.ContextMenu>
-                                    <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource=    {RelativeSource Self}}">
+                                    <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
                                         <MenuItem Header="Unmark as WTS" Click="UnmarkAsWTS" />
                                     </ContextMenu>
                                 </Image.ContextMenu>
                             </Image>
-                            <TextBlock Text="{Binding Path=amount}" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+                            <TextBlock Text="{Binding Path=Amount}" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

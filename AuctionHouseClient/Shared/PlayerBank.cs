@@ -9,9 +9,9 @@ namespace AuctionHouseClient.Shared
 {
     public class PlayerBank : PlayerParent
     {
-        public PlayerBank(DBConn _db)
-        {
-            inventory = _db.GetBank();
-        }
+        //public PlayerBank(DBConn _db)
+        //{
+        //    inventory = _db.GetBank();
+        //}
     }
 }

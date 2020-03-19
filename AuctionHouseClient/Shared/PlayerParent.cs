@@ -9,6 +9,6 @@ namespace AuctionHouseClient.Shared
 {
     public abstract class PlayerParent
     {
-        public ObservableCollection<GameItem> inventory = new ObservableCollection<GameItem>();
+        //public ObservableCollection<GameItem> inventory = new ObservableCollection<GameItem>();
     }
 }

@@ -22,7 +22,7 @@ namespace AuctionHouseClient.Views
     public partial class SoldAuctionsPopUpView : Window, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        public static event EventHandler<PropertyChangedEventArgs> StaticPropertyChanged;
+        //public static event EventHandler<PropertyChangedEventArgs> StaticPropertyChanged;
 
         private ObservableCollection<Mail> mailList;
         public ObservableCollection<Mail> MailList

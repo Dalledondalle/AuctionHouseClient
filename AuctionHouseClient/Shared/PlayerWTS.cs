@@ -9,9 +9,9 @@ namespace AuctionHouseClient.Shared
 {
     public class PlayerWTS : PlayerParent
     {
-        public PlayerWTS(DBConn _db)
-        {
-            inventory = _db.GetWts();
-        }
+        //public PlayerWTS(DBConn _db)
+        //{
+        //    inventory = _db.GetWts();
+        //}
     }
 }

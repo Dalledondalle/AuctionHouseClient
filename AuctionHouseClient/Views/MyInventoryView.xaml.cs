@@ -114,12 +114,48 @@ namespace AuctionHouseClient.Views
                 OnPropertyChanged("wtsSearch");
             }
         }
-        public ObservableCollection<GameItem> inventory { get; set; }
-        private ObservableCollection<GameItem> actualInventory;
-        public ObservableCollection<GameItem> bank { get; set; }
-        private ObservableCollection<GameItem> actualBank;
-        public ObservableCollection<GameItem> wts { get; set; }
-        private ObservableCollection<GameItem> actualWts;
+        private ObservableCollection<BagItem> bag;
+        public ObservableCollection<BagItem> Bag
+        {
+            get
+            {
+                return bag;
+            }
+            set
+            {
+                bag = value;
+                OnPropertyChanged("Bag");
+            }
+        }
+        private ObservableCollection<BagItem> actualBag;
+        private ObservableCollection<BankItem> bank;
+        public ObservableCollection<BankItem> Bank
+        {
+            get
+            {
+                return bank;
+            }
+            set
+            {
+                bank = value;
+                OnPropertyChanged("Bank");
+            }
+        }
+        private ObservableCollection<BankItem> actualBank;
+        private ObservableCollection<InventoryItem> wts;
+        public ObservableCollection<InventoryItem> Wts
+        { 
+            get
+            {
+                return wts;
+            }
+            set
+            {
+                wts = value;
+                OnPropertyChanged("Wts");
+            }
+        }
+        private ObservableCollection<InventoryItem> actualWts;
 
         DBConn db;
 
@@ -129,94 +165,92 @@ namespace AuctionHouseClient.Views
             wtsSearch = "";
             bankSearch = "";
             inventorySearch = "";
+            RefreshInventory();
             InitializeComponent();
             this.DataContext = this;
-            inventory = new PlayerInventory(_db).inventory;
-            actualInventory = new PlayerInventory(_db).inventory;
-            bank = new PlayerBank(_db).inventory;
-            actualBank = new PlayerBank(_db).inventory;
-            wts = new PlayerWTS(_db).inventory;
-            actualWts = new PlayerWTS(_db).inventory;
+        }
+        private void RefreshWts()
+        {
+            Wts = new ObservableCollection<InventoryItem>();
+            actualWts = new ObservableCollection<InventoryItem>();
+            foreach (InventoryItem i in actualBag)
+            {
+                if (i.Wts == true)
+                {
+                    Wts.Add(i);
+                    actualWts.Add(i);
+                }
+            }
+            foreach (InventoryItem i in actualBank)
+            {
+                if (i.Wts == true)
+                {
+                    Wts.Add(i);
+                    actualWts.Add(i);
+                }
+            }
         }
 
-
-        public void RefreshInventory(DBConn _db)
+        public void RefreshInventory()
         {
-            ObservableCollection<GameItem> t = new ObservableCollection<GameItem>(new PlayerInventory(_db).inventory);
-            inventory.Clear();
-            actualInventory.Clear();
-            foreach (GameItem g in t)
-            {
-                inventory.Add(g);
-                actualInventory.Add(g);
-            }
-            ObservableCollection<GameItem> t1 = new ObservableCollection<GameItem>(new PlayerBank(_db).inventory);
-            bank.Clear();
-            actualBank.Clear();
-            foreach (GameItem g in t1)
-            {
-                bank.Add(g);
-                actualBank.Add(g);
-            }
-            ObservableCollection<GameItem> t2 = new ObservableCollection<GameItem>(new PlayerWTS(_db).inventory);
-            wts.Clear();
-            actualWts.Clear();
-            foreach (GameItem g in t2)
-            {
-                wts.Add(g);
-                actualWts.Add(g);
-            }
+            Bag = new ObservableCollection<BagItem>(db.GetBag());
+            actualBag = new ObservableCollection<BagItem>(Bag);
+            Bank = new ObservableCollection<BankItem>(db.GetBank());
+            actualBank = new ObservableCollection<BankItem>(Bank);
+            RefreshWts();
         }
 
         private void FromInventoryToBank(object sender, RoutedEventArgs e)
         {
             MenuItem mi = e.Source as MenuItem;
-            GameItem ga = mi.DataContext as GameItem;
-            if (ga.name.ToLower().Contains(bankSearch.ToLower())) bank.Add(ga);
-            db.MoveToBank(ga);
-            actualBank.Add(ga);
-            actualBank.Remove(ga);
-            inventory.Remove(ga);
+            InventoryItem ba = mi.DataContext as InventoryItem;
+            if (ba.ContainedItem.name.ToLower().Contains(bankSearch.ToLower())) Bank.Add((BankItem)ba);
+            db.MoveToBank((BagItem)ba);
+            actualBank.Add((BankItem)ba);
+            actualBag.Remove((BagItem)ba);
+            Bag.Remove((BagItem)ba);
         }
 
         private void FromBankyToInventory(object sender, RoutedEventArgs e)
         {
             MenuItem mi = e.Source as MenuItem;
-            GameItem ga = mi.DataContext as GameItem;
-            if (ga.name.ToLower().Contains(inventorySearch.ToLower())) inventory.Add(ga);
-            db.MoveToBag(ga);
-            actualInventory.Add(ga);
-            actualBank.Remove(ga);
-            bank.Remove(ga);
+            InventoryItem ba = mi.DataContext as InventoryItem;
+            if (ba.ContainedItem.name.ToLower().Contains(inventorySearch.ToLower())) Bag.Add((BagItem)ba);
+            db.MoveToBag((BankItem)ba);
+            actualBag.Add((BagItem)ba);
+            actualBank.Remove((BankItem)ba);
+            Bank.Remove((BankItem)ba);
         }
 
         private void MarkAsWTS(object sender, RoutedEventArgs e)
         {
             MenuItem mi = e.Source as MenuItem;
-            GameItem ga = mi.DataContext as GameItem;
+            InventoryItem ba;
+            if (mi.DataContext.GetType() == new BagItem().GetType()) ba = mi.DataContext as BagItem;
+            else ba = mi.DataContext as BankItem;
             ContextMenu cm = mi.Parent as ContextMenu;
-            if (GetCountOfId(actualInventory, ga) + GetCountOfId(actualBank, ga) > GetCountOfId(actualWts, ga))
-            {
-                if (ga.name.ToLower().Contains(wtsSearch.ToLower())) wts.Add(ga);
-                db.MarkAsWts(ga);
-                actualWts.Add(ga);
-            }
+            ba.Wts = true;
+            if (ba.ContainedItem.name.ToLower().Contains(wtsSearch.ToLower())) Wts.Add(ba);
+            actualWts.Add(ba);
         }
 
         private void UnmarkAsWTS(object sender, RoutedEventArgs e)
         {
             MenuItem mi = e.Source as MenuItem;
-            GameItem ga = mi.DataContext as GameItem;
+            InventoryItem ga = mi.DataContext as InventoryItem;
             actualWts.Remove(ga);
-            wts.Remove(ga);
-            db.UnMarkForWts(ga);
+            Wts.Remove(ga);
+            ga.Wts = false;
         }
 
         private void DragFrom(object sender, MouseButtonEventArgs e)
         {
             Image dataObj = sender as Image;
             Grid g = dataObj.Parent as Grid;
-            GameItem ga = dataObj.DataContext as GameItem;
+            InventoryItem ga;
+            if (dataObj.DataContext.GetType() == new BankItem().GetType()) ga = dataObj.DataContext as BankItem;
+            else if (dataObj.DataContext.GetType() == new BagItem().GetType()) ga = dataObj.DataContext as BagItem;
+            else ga = dataObj.DataContext as InventoryItem;
             object[] o = new object[] { ga, g };
             DragDrop.DoDragDrop(dataObj, o, DragDropEffects.All);
         }
@@ -227,61 +261,45 @@ namespace AuctionHouseClient.Views
             DataObject obj = e.Data as DataObject;
             string[] dataFormats = obj.GetFormats();
             object[] o = obj.GetData(dataFormats[0]) as object[];
-            GameItem ga = o[0] as GameItem;
+            InventoryItem ba;
+            if (o[0].GetType() == new BagItem().GetType()) ba = o[0] as BagItem;
+            else if (o[0].GetType() == new BankItem().GetType()) ba = o[0] as BankItem;
+            else ba = o[0] as InventoryItem;
             Grid g = o[1] as Grid;
 
             //Add to lists
             //Add to WTS
             if (s.Name == "WTSScroll" && g.Name != "WTSGrid")
             {
-                if (GetCountOfId(actualInventory, ga) + GetCountOfId(actualBank, ga) > GetCountOfId(actualWts, ga))
-                {
-                    db.MarkAsWts(ga);
-                    actualWts.Add(ga);
-                    if (ga.name.ToLower().Contains(wtsSearch.ToLower())) wts.Add(ga);
-                }
+                ba.Wts = true;
+                RefreshWts();
             }
             //Add to Bank
             else if (s.Name == "BankScroll" && g.Name == "InvGrid")
             {
-                db.MoveToBank(ga);
-                actualBank.Add(ga);
-                if (ga.name.ToLower().Contains(bankSearch.ToLower())) bank.Add(ga);
+                db.MoveToBank((BagItem)ba);
+                RefreshInventory();
             }
             //Add to Bag
             else if (s.Name == "InvScroll" && g.Name == "BankGrid")
             {
-                db.MoveToBag(ga);
-                actualInventory.Add(ga);
-                if (ga.name.ToLower().Contains(inventorySearch.ToLower())) inventory.Add(ga);
+                db.MoveToBag((BankItem)ba);
+                RefreshInventory();
             }
 
             //Remove from lists
             //Remove from WTS
             if (g.Name == "WTSGrid")
             {
-                actualWts.Remove(ga);
-                wts.Remove(ga);
-                db.UnMarkForWts(ga);
-            }
-            //Remove from Bank
-            else if (g.Name == "BankGrid" && s.Name == "InvScroll")
-            {
-                actualBank.Remove(ga);
-                bank.Remove(ga);
-            }
-            //Remove from Inventory
-            else if (g.Name == "InvGrid" && s.Name == "BankScroll")
-            {
-                actualInventory.Remove(ga);
-                inventory.Remove(ga);
+                ba.Wts = false;
+                RefreshWts();
             }
         }
 
         private void ClearWTS(object sender, RoutedEventArgs e)
         {
             db.ClearWts();
-            wts.Clear();
+            Wts.Clear();
         }
 
         private void OnPropertyChanged(string v)
@@ -299,10 +317,10 @@ namespace AuctionHouseClient.Views
         {
             if (bankSearch.Length == 0) BankVis = Visibility.Visible;
             else BankVis = Visibility.Collapsed;
-            bank.Clear();
-            foreach (GameItem game in actualBank)
+            Bank.Clear();
+            foreach (BankItem game in actualBank)
             {
-                if (game.name.ToLower().Contains(bankSearch.ToLower())) bank.Add(game);
+                if (game.ContainedItem.name.ToLower().Contains(bankSearch.ToLower())) Bank.Add(game);
             }
         }
 
@@ -310,10 +328,10 @@ namespace AuctionHouseClient.Views
         {
             if (inventorySearch.Length == 0) InvVis = Visibility.Visible;
             else InvVis = Visibility.Collapsed;
-            inventory.Clear();
-            foreach (GameItem game in actualInventory)
+            Bag.Clear();
+            foreach (BagItem game in actualBag)
             {
-                if (game.name.ToLower().Contains(inventorySearch.ToLower())) inventory.Add(game);
+                if (game.ContainedItem.name.ToLower().Contains(inventorySearch.ToLower())) Bag.Add(game);
             }
         }
 
@@ -321,21 +339,11 @@ namespace AuctionHouseClient.Views
         {
             if (wtsSearch.Length == 0) WtsVis = Visibility.Visible;
             else WtsVis = Visibility.Collapsed;
-            wts.Clear();
-            foreach (GameItem game in actualWts)
+            Wts.Clear();
+            foreach (InventoryItem game in actualWts)
             {
-                if (game.name.ToLower().Contains(wtsSearch.ToLower())) wts.Add(game);
+                if (game.ContainedItem.name.ToLower().Contains(wtsSearch.ToLower())) Wts.Add(game);
             }
-        }
-
-        private int GetCountOfId(ObservableCollection<GameItem> list, GameItem g)
-        {
-            int count = 0;
-            foreach (GameItem G in list)
-            {
-                if (G.id == g.id && G.amount == g.amount) count++;
-            }
-            return count;
         }
     }
 }

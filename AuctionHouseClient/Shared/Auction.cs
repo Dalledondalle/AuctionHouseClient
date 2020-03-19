@@ -10,7 +10,6 @@ namespace AuctionHouseClient.Shared
 {
     public class Auction
     {
-        DBConn db;
         public int AuctionId { get; set; }
         public int Bid { get; set; }
         public int Buyout { get; set; }
@@ -34,9 +33,9 @@ namespace AuctionHouseClient.Shared
             } 
         }
         public int TimeLeftIndex { get; set; }
-        public Auction(GameItem g, DBConn _db)
+        public bool Premium { get; set; }
+        public Auction()
         {
-            item = g;
         }
         private string TimeLeftCalc(DateTime postedDate, int duration)
         {

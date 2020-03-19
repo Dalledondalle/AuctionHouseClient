@@ -68,6 +68,7 @@
     <Compile Include="Shared\Auction.cs" />
     <Compile Include="Shared\BagItem.cs" />
     <Compile Include="Shared\BankItem.cs" />
+    <Compile Include="Shared\Currency.cs" />
     <Compile Include="Shared\DBConn.cs" />
     <Compile Include="Shared\GameItem.cs" />
     <Compile Include="Shared\GameItemCollection.cs" />
@@ -77,6 +78,8 @@
     <Compile Include="Shared\PlayerInventory.cs" />
     <Compile Include="Shared\PlayerParent.cs" />
     <Compile Include="Shared\PlayerWTS.cs" />
+    <Compile Include="Shared\PremiumCurrency.cs" />
+    <Compile Include="Shared\RegularCurrency.cs" />
     <Compile Include="ViewModels\AdminModel.cs" />
     <Compile Include="ViewModels\BiddingPopUpModel.cs" />
     <Compile Include="ViewModels\BuyoutPopUpModel.cs" />
@@ -254,6 +257,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Diamond.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Gold.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

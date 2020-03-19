@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace AuctionHouseClient.Shared
 {
-    public class BagItem : InventoryItem
+    public class PremiumCurrency : Currency
     {
+        public PremiumCurrency()
+        {
+            Name = "Diamond";
+        }
     }
 }

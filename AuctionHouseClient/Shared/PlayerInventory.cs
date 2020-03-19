@@ -11,9 +11,9 @@ namespace AuctionHouseClient.Shared
 {
     public class PlayerInventory : PlayerParent
     {
-        public PlayerInventory(DBConn _db)
-        {
-            inventory = _db.GetBag();
-        }
+        //public PlayerInventory(DBConn _db)
+        //{
+        //    inventory = _db.GetBag();
+        //}
     }
 }

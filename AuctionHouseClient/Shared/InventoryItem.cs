@@ -8,7 +8,19 @@ namespace AuctionHouseClient.Shared
 {
     public class InventoryItem
     {
-        public bool Wts { get; set; }
+        private bool wts;
+        public bool Wts 
+        {
+            get
+            {
+                return wts;
+            }
+            set
+            {
+                wts = value;
+                if (db != null) db.UnMarkForWts(this);
+            }
+        }
         public DBConn db { get; set; }
         public int id { get; set; }
         public int Itemid { get; set; }

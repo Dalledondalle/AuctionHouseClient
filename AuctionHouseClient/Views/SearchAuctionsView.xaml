@@ -9,9 +9,9 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-        <DataTemplate x:Name="SearchedAuctionsViewTemplate" DataType="{x:Type viewmodels:SearchedAuctionsModel}">
+        <!--<DataTemplate x:Name="SearchedAuctionsViewTemplate" DataType="{x:Type viewmodels:SearchedAuctionsModel}">
             <views:SearchedAuctionsView DataContext="{Binding}"/>
-        </DataTemplate>
+        </DataTemplate>-->
     </UserControl.Resources>
     <Grid Background="#AAAAAA">
         <Grid.ColumnDefinitions>
@@ -58,7 +58,7 @@
         </DockPanel>
         <DockPanel Background="#AAAAAA" Grid.Row="3" Grid.Column="4" Grid.ColumnSpan="3" Grid.RowSpan="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <ScrollViewer x:Name="WTSScroll" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="5" Background="#848484"  AllowDrop="True">
-                <ItemsControl ItemsSource="{Binding Path=wts}">
+                <ItemsControl ItemsSource="{Binding Path=Wts}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel ScrollViewer.CanContentScroll="True"/>
@@ -67,7 +67,7 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Grid x:Name="WTSGrid">
-                                <Image Source="{Binding Path=image}" Height="50" Width="50" MouseLeftButtonDown="Item_MouseDown">
+                                <Image Source="{Binding Path=ContainedItem.image}" Height="50" Width="50" MouseLeftButtonDown="Item_MouseDown">
                                     <Image.ToolTip>
                                         <ToolTip Background="#AAAAAA">
                                             <Grid>
@@ -78,7 +78,7 @@
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="1*"/>
                                                 </Grid.RowDefinitions>
-                                                <ListView ItemsSource="{Binding Path=tooltipInfo}" Grid.Row="0" Grid.ColumnSpan="2" VerticalAlignment="Stretch" BorderBrush="Transparent" Background="#AAAAAA" Margin="0" Padding="0">
+                                                <ListView ItemsSource="{Binding Path=ContainedItem.tooltipInfo}" Grid.Row="0" Grid.ColumnSpan="2" VerticalAlignment="Stretch" BorderBrush="Transparent" Background="#AAAAAA" Margin="0" Padding="0">
                                                     <ListView.View>
                                                         <GridView>
                                                             <GridView.ColumnHeaderContainerStyle>
@@ -119,12 +119,27 @@
                                         </ContextMenu>
                                     </Image.ContextMenu>
                                 </Image>
-                                <TextBlock Text="{Binding Path=amount}" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+                                <TextBlock Text="{Binding Path=Amount}" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
         </DockPanel>
+        <Grid Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="7">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="11*"/>
+                <ColumnDefinition Width="14*"/>
+                <ColumnDefinition Width="100*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="{Binding Regular.Name}"/>
+                <TextBlock Text="{Binding Premium.Name}"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1">
+                <TextBlock Text="{Binding Regular.Amount}" HorizontalAlignment="Right"/>
+                <TextBlock Text="{Binding Premium.Amount}" HorizontalAlignment="Right"/>
+            </StackPanel>
+        </Grid>
     </Grid>    
 </UserControl>

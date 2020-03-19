@@ -31,11 +31,38 @@ namespace AuctionHouseClient.Views
         public event myEventDelegaqte SwitchView;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private GameItem itemToLookUp;
+        private InventoryItem itemToLookUp;
+
+        private RegularCurrency regular;
+        public RegularCurrency Regular
+        {
+            get
+            {
+                return regular;
+            }
+            set
+            {
+                regular = value;
+                OnPropertyChanged("Regular");
+            }
+        }
+        private PremiumCurrency premium;
+        public PremiumCurrency Premium
+        {
+            get
+            {
+                return premium;
+            }
+            set
+            {
+                premium = value;
+                OnPropertyChanged("Premium");
+            }
+        }
 
         DBConn db;
 
-        public ObservableCollection<GameItem> wts { get; set; }
+        public ObservableCollection<InventoryItem> Wts { get; set; }
 
         private string searchIt;
 
@@ -49,13 +76,36 @@ namespace AuctionHouseClient.Views
             }
         }
 
-
+        private void OnPropertyChanged(string v)
+        {
+            if (this.PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(v));
+            }
+        }
         public SearchAuctionsView(DBConn _db)
         {
             db = _db;
+            Regular = db.GetRegularCurrency();
+            Premium = db.GetPremiumCurrency();
             InitializeComponent();
-            wts = new PlayerWTS(_db).inventory;
+            MakeWts();
             //DataContext = new SearchAuctionModel();
+        }
+
+        private void MakeWts()
+        {
+            Wts = new ObservableCollection<InventoryItem>();
+            ObservableCollection<InventoryItem> t1 = new ObservableCollection<InventoryItem>(db.GetBag());
+            ObservableCollection<InventoryItem> t2 = new ObservableCollection<InventoryItem>(db.GetBank());
+            foreach (InventoryItem inventory in t1)
+            {
+                if (inventory.Wts == true) Wts.Add(inventory);
+            }
+            foreach (InventoryItem inventory in t2)
+            {
+                if (inventory.Wts == true) Wts.Add(inventory);
+            }
         }
 
         public void Searching_Clicked(object sender, RoutedEventArgs e)
@@ -85,27 +135,23 @@ namespace AuctionHouseClient.Views
 
         public void RefreshWts(DBConn _db)
         {
-            ObservableCollection<GameItem> t1 = new ObservableCollection<GameItem>(new PlayerWTS(_db).inventory);
-            wts.Clear();
-            foreach (GameItem g in t1)
-            {
-                wts.Add(g);
-            }
+            db = _db;
+            MakeWts();
         }
 
         private void Item_MouseDown(object sender, MouseButtonEventArgs e)
         {
             Image i = sender as Image;
-            itemToLookUp = i.DataContext as GameItem;
-            SearchIt = itemToLookUp.name;
+            itemToLookUp = i.DataContext as InventoryItem;
+            SearchIt = itemToLookUp.ContainedItem.name;
             QuickSearch();
         }
 
         private void UnmarkForWts(MenuItem mi)
         {
-            GameItem ga = mi.DataContext as GameItem;
-            wts.Remove(ga);
-            db.UnMarkForWts(ga);
+            InventoryItem ga = mi.DataContext as InventoryItem;
+            Wts.Remove(ga);
+            ga.Wts = false;
         }
 
         private void UnmarkeMenu_Click(object sender, RoutedEventArgs e)

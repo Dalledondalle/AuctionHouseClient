@@ -202,7 +202,7 @@ namespace AuctionHouseClient.Shared
         public void MoveToBag(BankItem bankitem)
         {
             //OpenConn();
-            SqlCommand cmd = new SqlCommand("exec MoveToBag @id, @itemid, @amount", conn);
+            SqlCommand cmd = new SqlCommand("exec MoveToBag @id", conn);
             cmd.Parameters.AddWithValue("@id", bankitem.id);
             cmd.CommandType = CommandType.Text;
             cmd.ExecuteNonQuery();
@@ -210,16 +210,27 @@ namespace AuctionHouseClient.Shared
         }
 
         //Updated for new DB
-        public void UnMarkForWts(GameItem g)
+        public void UnMarkForWts(object inventoryItem)
         {
-            //OpenConn();
-            SqlCommand command = new SqlCommand("exec UnMarkForWts @userID, @itemID, @amount", conn);
-            command.Parameters.AddWithValue("@userID", userID);
-            command.Parameters.AddWithValue("@itemID", g.id);
-            command.Parameters.AddWithValue("@amount", g.amount);
-            command.CommandType = CommandType.Text;
-            command.ExecuteNonQuery();
-            command.Dispose();
+            SqlCommand cmd;
+            InventoryItem ba;
+            if (inventoryItem.GetType() == new BagItem().GetType())
+            {
+                ba = (BagItem)inventoryItem;
+                cmd = new SqlCommand("exec MarkBag @id, @wts", conn);
+                cmd.Parameters.AddWithValue("@id", ba.id);
+                cmd.Parameters.AddWithValue("@wts", ba.Wts);
+            }
+            else
+            {
+                ba = (BankItem)inventoryItem;
+                cmd = new SqlCommand("exec MarkBank @id, @wts", conn);
+                cmd.Parameters.AddWithValue("@id", ba.id);
+                cmd.Parameters.AddWithValue("@wts", ba.Wts);
+            }
+            cmd.CommandType = CommandType.Text;
+            cmd.ExecuteNonQuery();
+            cmd.Dispose();
         }
 
         //Updated for new DB
@@ -227,8 +238,9 @@ namespace AuctionHouseClient.Shared
         {
             //OpenConn();
             ObservableCollection<Auction> collection = new ObservableCollection<Auction>();
-            SqlCommand command = new SqlCommand("exec SearchAuction @Search", conn);
+            SqlCommand command = new SqlCommand("exec SearchAuction @Search, @premium", conn);
             command.Parameters.AddWithValue("@Search", search);
+            command.Parameters.AddWithValue("@premium", 0);
             using (SqlDataReader reader = command.ExecuteReader())
             {
                 while (reader.Read())
@@ -289,7 +301,8 @@ namespace AuctionHouseClient.Shared
                     GameItem g = new GameItem(itemid, itemName, game, category, description,
                                                 sta, intel, agi, str, haste, crit, vers, spellpower);
                     g.amount = amount;
-                    Auction a = new Auction(g, this);
+                    Auction a = new Auction();
+                    a.item = g;
                     a.AuctionId = id;
                     a.Bid = bid;
                     a.Buyout = buyout;
@@ -303,7 +316,7 @@ namespace AuctionHouseClient.Shared
             command.Dispose();
             return collection;
         }
-    
+
         //Updated for new DB
         public ObservableCollection<Auction> GetPostedList()
         {
@@ -371,7 +384,8 @@ namespace AuctionHouseClient.Shared
                     GameItem g = new GameItem(itemid, itemName, game, category, description,
                                                 sta, intel, agi, str, haste, crit, vers, spellpower);
                     g.amount = amount;
-                    Auction a = new Auction(g, this);
+                    Auction a = new Auction();
+                    a.item = g;
                     a.AuctionId = id;
                     a.Bid = bid;
                     a.Buyout = buyout;
@@ -395,7 +409,7 @@ namespace AuctionHouseClient.Shared
             command.Parameters.AddWithValue("@userid", userID);
             using (SqlDataReader reader = command.ExecuteReader())
             {
-                while(reader.Read())
+                while (reader.Read())
                 {
                     collection.Add(new BankItem
                     {
@@ -445,13 +459,17 @@ namespace AuctionHouseClient.Shared
         }
 
         //Updated for new DB
-        public void PostAuction(GameItem g, int PostingAmount, int duration, int buyout, int bid = 0)
+        public void PostAuction(InventoryItem g, int PostingAmount, int duration, int buyout, int bid = 0)
         {
             //OpenConn();
-            SqlCommand cmd = new SqlCommand("exec PostAuction @userid, @itemid, @AmountToPost, @MaxAmount, @buyout, @bid, @duration", conn);
+            SqlCommand cmd = new SqlCommand("exec PostAuction @id, @userid, @itemid, @AmountToPost, @MaxAmount, @buyout, @bid, @duration, @bank, @premium", conn);
+            if (g.GetType() == new BagItem().GetType()) cmd.Parameters.AddWithValue("@Bank", false);
+            else cmd.Parameters.AddWithValue("@Bank", true);
+            cmd.Parameters.AddWithValue("@premium", false);
+            cmd.Parameters.AddWithValue("@id", g.id);
             cmd.Parameters.AddWithValue("@userid", userID);
-            cmd.Parameters.AddWithValue("@itemid", g.id);
-            cmd.Parameters.AddWithValue("@MaxAmount", g.amount);
+            cmd.Parameters.AddWithValue("@itemid", g.ContainedItem.id);
+            cmd.Parameters.AddWithValue("@MaxAmount", g.Amount);
             cmd.Parameters.AddWithValue("@AmountToPost", PostingAmount);
             cmd.Parameters.AddWithValue("@Buyout", buyout);
             cmd.Parameters.AddWithValue("@Bid", bid);
@@ -470,17 +488,19 @@ namespace AuctionHouseClient.Shared
             {
                 while (reader.Read())
                 {
-                    collect.Add(new Mail(this) {    id = int.Parse(reader.GetValue(0).ToString()),
-                                                    Itemid = int.Parse(reader.GetValue(2).ToString()),
-                                                    amount = int.Parse(reader.GetValue(3).ToString()),
-                                                    RecievedDate = (DateTime)reader.GetValue(4),
-                                                    Message = (string)reader.GetValue(5),
-                                                    Claimed = (bool)reader.GetValue(6),
-                                                    Seen = (bool)reader.GetValue(7)
-                    }) ;
+                    collect.Add(new Mail(this)
+                    {
+                        id = int.Parse(reader.GetValue(0).ToString()),
+                        Itemid = int.Parse(reader.GetValue(2).ToString()),
+                        amount = int.Parse(reader.GetValue(3).ToString()),
+                        RecievedDate = (DateTime)reader.GetValue(4),
+                        Message = (string)reader.GetValue(5),
+                        Claimed = (bool)reader.GetValue(6),
+                        Seen = (bool)reader.GetValue(7)
+                    });
                 }
             }
-            foreach(Mail m in collect)
+            foreach (Mail m in collect)
             {
                 m.RefreshItem();
             }
@@ -522,6 +542,40 @@ namespace AuctionHouseClient.Shared
             cmd.CommandType = CommandType.Text;
             cmd.ExecuteNonQuery();
             cmd.Dispose();
+        }
+
+        public PremiumCurrency GetPremiumCurrency()
+        {
+            PremiumCurrency t = new PremiumCurrency();
+            SqlCommand command = new SqlCommand("exec GetPremium @userid", conn);
+            command.Parameters.AddWithValue("@userid", userID);
+            using (SqlDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    t = new PremiumCurrency()
+                    {
+                        Amount = (int)reader.GetValue(0)
+                    };
+                }
+            }
+            return t;
+        }
+
+        public RegularCurrency GetRegularCurrency()
+        {
+            //OpenConn();
+            SqlCommand command = new SqlCommand("exec GetRegular @userid", conn);
+            command.Parameters.AddWithValue("@userid", userID);
+            using (SqlDataReader reader = command.ExecuteReader())
+            {
+                if (reader.Read())
+                {
+                    return new RegularCurrency() { Amount = (int)reader.GetValue(0) };
+                }
+            }
+            command.Dispose();
+            return new RegularCurrency() { Amount = 0 };
         }
     }
 }

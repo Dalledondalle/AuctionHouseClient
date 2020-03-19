@@ -36,7 +36,7 @@ namespace AuctionHouseClient.Views
                 int i;
                 if (int.TryParse(value, out i))
                 {
-                    if (i > itemToPost.amount) amountTxtBox = itemToPost.amount.ToString();
+                    if (i > itemToPost.Amount) amountTxtBox = itemToPost.Amount.ToString();
                     else if (i < 1) amountTxtBox = "1";
                     else amountTxtBox = value;
                 }
@@ -131,8 +131,8 @@ namespace AuctionHouseClient.Views
                 OnPropertyChanged("SelectedItem");
             }
         }
-        private GameItem itemToPost;
-        public GameItem ItemToPost { 
+        private InventoryItem itemToPost;
+        public InventoryItem ItemToPost { 
             get 
             {
                 return itemToPost;
@@ -140,8 +140,8 @@ namespace AuctionHouseClient.Views
             set
             {
                 itemToPost = value;
-                ItemName = value.name;
-                AmountTxtBox = value.amount.ToString();
+                ItemName = value.ContainedItem.name;
+                AmountTxtBox = value.Amount.ToString();
                 OnPropertyChanged("ItemToPost");
             }
         }

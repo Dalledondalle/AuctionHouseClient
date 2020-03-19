@@ -54,7 +54,7 @@ namespace AuctionHouseClient
         private void Setup()
         {
             searchAuctionsView = new SearchAuctionsView(dBConn);
-            searchedAuctionsView = new SearchedAuctionsView();
+            searchedAuctionsView = new SearchedAuctionsView(dBConn);
             postAuctionsView = new PostAuctionsView();
             myAuctionsView = new MyAuctionsView(dBConn);
             myInventoryView = new MyInventoryView(dBConn);
@@ -70,6 +70,7 @@ namespace AuctionHouseClient
             searchedAuctionsView.QuickSearch = e.QuickSearch;
             searchedAuctionsView.itemToLookUp = e.itemToLookUp;
             searchedAuctionsView.Search(e.SearchedString);
+            searchedAuctionsView.db = e.db;
             DataContext = searchedAuctionsView;
         }
 
@@ -108,7 +109,6 @@ namespace AuctionHouseClient
             if (loginView.LoggedIn)
             {
                 if (!setupDone) Setup();
-                searchedAuctionsView.db = dBConn;
                 isSearching();
             }
         }
@@ -119,7 +119,7 @@ namespace AuctionHouseClient
             if (loginView.LoggedIn)
             {
                 if (!setupDone) Setup();
-                myInventoryView.RefreshInventory(dBConn);
+                myInventoryView.RefreshInventory();
                 DataContext = myInventoryView;
             }
         }
@@ -185,7 +185,7 @@ namespace AuctionHouseClient
         private string searchedString;
         public DBConn db { get; set; }
         public bool QuickSearch { get; set; }
-        public GameItem itemToLookUp { get; set; }
+        public InventoryItem itemToLookUp { get; set; }
         public ViewSelection newView { get; set; }
         public string SearchedString
         {
