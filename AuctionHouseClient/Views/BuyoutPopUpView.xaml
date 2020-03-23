@@ -5,7 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AuctionHouseClient.Views"
         mc:Ignorable="d"
-        Title="BuyoutPopUpView" Height="125" Width="200">
+        Title="Buyout" 
+        Height="100" 
+        Width="150"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="CanResizeWithGrip">
     <Grid Background="#AAAAAA">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
@@ -15,11 +20,14 @@
             <RowDefinition Height="2*"/>
             <RowDefinition Height="3*"/>
             <RowDefinition Height="3*"/>
+            <RowDefinition Height="3*"/>
         </Grid.RowDefinitions>
-        <TextBlock Text='"Name of Item"' Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,5,0"/>
-        <TextBlock Text="Price: " Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="1" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,5,0"/>
-        <TextBlock Text="$$$$$.$$" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="1" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0,5,0"/>
-        <Button Content="Buyout" BorderBrush="Transparent" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="5,0,5,0"/>
-        <Button Content="Close" BorderBrush="Transparent" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="5,0,5,0"/>
+        <TextBlock Text="{Binding AuctionName, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,5,0"/>
+        <TextBlock Text="Amount: " Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,5,0"/>
+        <TextBox Text="{Binding Amount, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right" Margin="5,0,5,0"/>
+        <TextBlock Text="Price: " Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="1" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,5,0"/>
+        <TextBlock Text="{Binding Price, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="1" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0,5,0"/>
+        <Button Content="Buyout" BorderBrush="Transparent" Grid.Column="0" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="5,0,5,0" Click="Button_Click_1"/>
+        <Button Content="Close" BorderBrush="Transparent" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="5,0,5,0" Click="Button_Click"/>
     </Grid>
 </Window>

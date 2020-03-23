@@ -207,7 +207,6 @@ namespace AuctionHouseClient.Views
         {
             db.CancelAuction(SelectedItem);
             FillPosts();
-            return;
         }
     }
 }

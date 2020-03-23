@@ -44,6 +44,19 @@ namespace AuctionHouseClient.Views
         public event PropertyChangedEventHandler PropertyChanged;
         private string searchIt;
 
+        private Auction selectedItem;
+        public Auction SelectedItem
+        {
+            get
+            {
+                return selectedItem;
+            }
+            set
+            {
+                selectedItem = value;
+            }
+        }
+
         private PostingPopUpView PostPopUpView;
         public bool QuickSearch { get; set; }
         public InventoryItem itemToLookUp { get; set; }
@@ -108,6 +121,8 @@ namespace AuctionHouseClient.Views
                 OnPropertyChanged("Premium");
             }
         }
+
+        BuyoutPopUpView buyoutPopUpView;
 
         public DBConn db { get; set; }
 
@@ -185,7 +200,9 @@ namespace AuctionHouseClient.Views
 
         private void Buy_Click(object sender, RoutedEventArgs e)
         {
-            return;
+            buyoutPopUpView = new BuyoutPopUpView();
+            buyoutPopUpView.AuctionToBuy = SelectedItem;
+            buyoutPopUpView.Show();
         }
 
         private void SearchBox_KeyDown(object sender, KeyEventArgs e)
@@ -209,7 +226,7 @@ namespace AuctionHouseClient.Views
                 }
                 else
                 {
-                    temp.Sort(delegate (Auction a1, Auction a2) { return a1.item.name.CompareTo(a2.item.name); });
+                    temp.Sort(delegate (Auction a1, Auction a2) { return a1.Name.CompareTo(a2.Name); });
                     sorted[arg] = true;
                 }
             }
@@ -274,7 +291,7 @@ namespace AuctionHouseClient.Views
                 }
                 else
                 {
-                    temp.Sort(delegate (Auction a1, Auction a2) { return a1.item.amount.CompareTo(a2.item.amount); });
+                    temp.Sort(delegate (Auction a1, Auction a2) { return a1.Amount.CompareTo(a2.Amount); });
                     sorted[arg] = true;
                 }
             }

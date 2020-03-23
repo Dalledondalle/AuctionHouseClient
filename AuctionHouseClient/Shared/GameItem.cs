@@ -20,7 +20,6 @@ namespace AuctionHouseClient.Shared
         public string category { get; set; }
         public string imagePath { get; set; }
         public ImageSource image { get; }
-        public int amount { get; set; }
         public Dictionary<string, int> stats { get; }
         public Dictionary<string, string> tooltipInfo { get; }
 

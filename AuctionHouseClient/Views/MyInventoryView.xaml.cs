@@ -70,6 +70,33 @@ namespace AuctionHouseClient.Views
             }
         }
 
+        private RegularCurrency regular;
+        public RegularCurrency Regular
+        {
+            get
+            {
+                return regular;
+            }
+            set
+            {
+                regular = value;
+                OnPropertyChanged("Regular");
+            }
+        }
+        private PremiumCurrency premium;
+        public PremiumCurrency Premium
+        {
+            get
+            {
+                return premium;
+            }
+            set
+            {
+                premium = value;
+                OnPropertyChanged("Premium");
+            }
+        }
+
         private string bankSearch;
         public string BankSearch
         {
@@ -162,6 +189,8 @@ namespace AuctionHouseClient.Views
         public MyInventoryView(DBConn _db)
         {
             db = _db;
+            Regular = db.GetRegularCurrency();
+            Premium = db.GetPremiumCurrency();
             wtsSearch = "";
             bankSearch = "";
             inventorySearch = "";

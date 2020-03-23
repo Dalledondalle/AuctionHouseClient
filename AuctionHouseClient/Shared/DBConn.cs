@@ -300,9 +300,10 @@ namespace AuctionHouseClient.Shared
 
                     GameItem g = new GameItem(itemid, itemName, game, category, description,
                                                 sta, intel, agi, str, haste, crit, vers, spellpower);
-                    g.amount = amount;
                     Auction a = new Auction();
+                    a.Amount = amount;
                     a.item = g;
+                    a.Name = a.item.name;
                     a.AuctionId = id;
                     a.Bid = bid;
                     a.Buyout = buyout;
@@ -383,8 +384,9 @@ namespace AuctionHouseClient.Shared
 
                     GameItem g = new GameItem(itemid, itemName, game, category, description,
                                                 sta, intel, agi, str, haste, crit, vers, spellpower);
-                    g.amount = amount;
                     Auction a = new Auction();
+                    a.Amount = amount;
+                    a.Name = itemName;
                     a.item = g;
                     a.AuctionId = id;
                     a.Bid = bid;
