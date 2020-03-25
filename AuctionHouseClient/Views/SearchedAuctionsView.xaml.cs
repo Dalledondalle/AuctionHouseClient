@@ -123,7 +123,7 @@ namespace AuctionHouseClient.Views
         }
 
         BuyoutPopUpView buyoutPopUpView;
-
+        BiddingPopUpView biddingPopUpView;
         public DBConn db { get; set; }
 
         private Dictionary<string, bool> sorted;
@@ -201,6 +201,7 @@ namespace AuctionHouseClient.Views
         private void Buy_Click(object sender, RoutedEventArgs e)
         {
             buyoutPopUpView = new BuyoutPopUpView();
+            buyoutPopUpView.db = db;
             buyoutPopUpView.AuctionToBuy = SelectedItem;
             buyoutPopUpView.Show();
         }
@@ -305,7 +306,10 @@ namespace AuctionHouseClient.Views
 
         private void Bid_Click(object sender, RoutedEventArgs e)
         {
-            return;
+            biddingPopUpView = new BiddingPopUpView();
+            biddingPopUpView.Db = db;
+            biddingPopUpView.AuctionToBidOn = SelectedItem;
+            biddingPopUpView.Show();
         }
 
         private void Grid_Click(object sender, MouseButtonEventArgs e)

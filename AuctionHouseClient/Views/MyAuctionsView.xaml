@@ -20,7 +20,7 @@
             <RowDefinition Height="10*"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
-        <TextBox Text="Search own auctions" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="4" VerticalAlignment="Center"/>
+        <TextBox Text="{Binding FilterWord, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="4" VerticalAlignment="Center"/>
         <Grid Background="#848484" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
@@ -108,10 +108,10 @@
                                         </ToolTip>
                                     </Image.ToolTip>
                                 </Image>
-                                <TextBlock Text="{Binding Path=item.name}" Grid.Column="1" FontSize="16" Margin="2,0,2,0" HorizontalAlignment="Left"/>
+                                <TextBlock Text="{Binding Path=Name}" Grid.Column="1" FontSize="16" Margin="2,0,2,0" HorizontalAlignment="Left"/>
                             </Grid>
                             <TextBlock Text="{Binding Path=TimeLeft}" FontSize="16" Grid.Column="1" Margin="2,0,2,0" HorizontalAlignment="Center"/>
-                            <TextBlock Text="{Binding Path=item.amount}" FontSize="16" Grid.Column="2" Margin="2,0,2,0" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding Path=Amount}" FontSize="16" Grid.Column="2" Margin="2,0,2,0" HorizontalAlignment="Center"/>
                             <TextBlock Text="{Binding Path=Bid}" FontSize="16" Grid.Column="3" Margin="2,0,2,0" HorizontalAlignment="Center"/>
                             <TextBlock Text="{Binding Path=Buyout}" FontSize="16" Grid.Column="4" Margin="2,0,2,0" HorizontalAlignment="Center"/>
                         </Grid>
@@ -127,8 +127,8 @@
                 <TextBlock Text="Total Bid Reg. Currency:" Grid.Column="1" Grid.Row="2"/>
             </StackPanel>
             <StackPanel Margin="4,0,0,0">
-                <TextBlock Text="XXXXXX.XX" Grid.Column="1" Grid.Row="2"/>
-                <TextBlock Text="XXXXXX.XX" Grid.Column="1" Grid.Row="2"/>
+                <TextBlock Text="{Binding TotalBuyoutRegular}" Grid.Column="1" Grid.Row="2"/>
+                <TextBlock Text="{Binding TotalBidRegular}" Grid.Column="1" Grid.Row="2"/>
             </StackPanel>
         </StackPanel>
         <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal">
@@ -137,8 +137,8 @@
                 <TextBlock Text="Total Bid Premium Currency:" Grid.Column="1" Grid.Row="2"/>
             </StackPanel>
             <StackPanel Margin="4,0,0,0">
-                <TextBlock Text="XXXXXX.XX" Grid.Column="1" Grid.Row="2"/>
-                <TextBlock Text="XXXXXX.XX" Grid.Column="1" Grid.Row="2"/>
+                <TextBlock Text="{Binding TotalBuyoutPremium}" Grid.Column="1" Grid.Row="2"/>
+                <TextBlock Text="{Binding TotalBidPremium}" Grid.Column="1" Grid.Row="2"/>
             </StackPanel>
         </StackPanel>
         

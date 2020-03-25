@@ -43,6 +43,8 @@ namespace AuctionHouseClient.Views
             }
         }
 
+        public DBConn db { get; set; }
+
         private string amount;
         public string Amount
         {
@@ -89,14 +91,27 @@ namespace AuctionHouseClient.Views
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Close_Click(object sender, RoutedEventArgs e)
         {
             Close();
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void Buyout_Click(object sender, RoutedEventArgs e)
         {
-            Debug.WriteLine(AuctionName);
+            db.Buyout(auctionToBuy, int.Parse(Amount));
+        }
+
+        private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (Mouse.LeftButton == MouseButtonState.Pressed)
+            {
+                if (this.WindowState == WindowState.Maximized)
+                {
+                    this.WindowState = WindowState.Normal;
+                    Application.Current.MainWindow.Top = 3;
+                }
+                this.DragMove();
+            }
         }
     }
 }

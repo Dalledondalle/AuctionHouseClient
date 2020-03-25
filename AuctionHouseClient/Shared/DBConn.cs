@@ -579,5 +579,28 @@ namespace AuctionHouseClient.Shared
             command.Dispose();
             return new RegularCurrency() { Amount = 0 };
         }
+
+        public void Buyout(Auction auction, int amount)
+        {
+            SqlCommand cmd = new SqlCommand("exec Buyout @auctionID, @userid, @amount, @premium", conn);
+            cmd.Parameters.AddWithValue("@auctionID", auction.AuctionId);
+            cmd.Parameters.AddWithValue("@userid", userID);
+            cmd.Parameters.AddWithValue("@amount", amount);
+            cmd.Parameters.AddWithValue("@premium", auction.Premium);
+            cmd.CommandType = CommandType.Text;
+            cmd.ExecuteNonQuery();
+            cmd.Dispose();
+        }
+
+        public void Bid(Auction auction, int amount)
+        {
+            SqlCommand cmd = new SqlCommand("exec Bid @userid, @auctionid, @bidamount", conn);
+            cmd.Parameters.AddWithValue("@userid", userID);
+            cmd.Parameters.AddWithValue("@auctionid", auction.AuctionId);
+            cmd.Parameters.AddWithValue("@bidamount", amount);
+            cmd.CommandType = CommandType.Text;
+            cmd.ExecuteNonQuery();
+            cmd.Dispose();
+        }
     }
 }

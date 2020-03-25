@@ -155,6 +155,7 @@ namespace AuctionHouseClient.Views
             }
         }
         private ObservableCollection<BagItem> actualBag;
+
         private ObservableCollection<BankItem> bank;
         public ObservableCollection<BankItem> Bank
         {
@@ -168,6 +169,7 @@ namespace AuctionHouseClient.Views
                 OnPropertyChanged("Bank");
             }
         }
+
         private ObservableCollection<BankItem> actualBank;
         private ObservableCollection<InventoryItem> wts;
         public ObservableCollection<InventoryItem> Wts

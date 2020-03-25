@@ -180,10 +180,7 @@ namespace AuctionHouseClient.Views
 
         private void PostAuction()
         {
-            int t;
-            if (BidTxtBox != "") t = 0;
-            else t = int.Parse(bidTxtBox);
-            db.PostAuction(ItemToPost, int.Parse(AmountTxtBox), SelectedItem, int.Parse(BuyoutTxtBox), t);
+            db.PostAuction(ItemToPost, int.Parse(AmountTxtBox), SelectedItem, int.Parse(BuyoutTxtBox), int.Parse(BidTxtBox));
         }
 
         private void ComboBox_Selected(object sender, RoutedEventArgs e)

@@ -30,6 +30,9 @@ namespace AuctionHouseClient.Views
 
         public event PropertyChangedEventHandler PropertyChanged;
         private SoldAuctionsPopUpView soldAuctionsPopUpView;
+
+        private ObservableCollection<Auction> actualPostedList;
+
         private ObservableCollection<Auction> postedList;
         public ObservableCollection<Auction> PostedList 
         {
@@ -55,6 +58,20 @@ namespace AuctionHouseClient.Views
                 selectedItem = value;
             }
         }
+        private string filterWord;
+        public string FilterWord
+        {
+            get
+            {
+                return filterWord;
+            }
+            set
+            {
+                filterWord = value;
+                Filter();
+                OnPropertyChanged("FilterWord");
+            }
+        }
 
         private void OnPropertyChanged(string v)
         {
@@ -64,6 +81,59 @@ namespace AuctionHouseClient.Views
             }
         }
 
+        private int totalBuyoutRegular;
+        private int totalBidRegular;
+        private int totalBuyoutPremium;
+        private int totalBidPremium;
+
+        public int TotalBuyoutRegular
+        {
+            get
+            {
+                return totalBuyoutRegular;
+            }
+            set
+            {
+                totalBuyoutRegular = value;
+                OnPropertyChanged("TotalBuyoutRegular");
+            }
+        }
+        public int TotalBidRegular
+        {
+            get
+            {
+                return totalBidRegular;
+            }
+            set
+            {
+                totalBidRegular = value;
+                OnPropertyChanged("TotalBidRegular");
+            }
+        }
+        public int TotalBuyoutPremium
+        {
+            get
+            {
+                return totalBuyoutPremium;
+            }
+            set
+            {
+                totalBuyoutPremium = value;
+                OnPropertyChanged("TotalBuyoutPremium");
+            }
+        }
+        public int TotalBidPremium
+        {
+            get
+            {
+                return totalBidPremium;
+            }
+            set
+            {
+                totalBidPremium = value;
+                OnPropertyChanged("TotalBidPremium");
+            }
+        }
 
         public MyAuctionsView(DBConn _db)
         {
@@ -174,13 +244,28 @@ namespace AuctionHouseClient.Views
         }
         public void FillPosts()
         {
+            totalBuyoutRegular = 0;
+            totalBidRegular = 0;
+            totalBuyoutPremium = 0;
+            totalBidPremium = 0;
             postedList.Clear();
             ObservableCollection<Auction> t;
             t = db.GetPostedList();
             foreach (Auction a in t)
             {
                 postedList.Add(a);
+                if(a.Premium)
+                {
+                    totalBuyoutPremium += a.Buyout * a.Amount;
+                    totalBidPremium += a.Bid * a.Amount;
+                }
+                else
+                {
+                    totalBuyoutRegular += a.Buyout * a.Amount;
+                    totalBidRegular += a.Bid * a.Amount;
+                }
             }
+            actualPostedList = new ObservableCollection<Auction>(postedList);
         }
         private void FixDic(string s)
         {
@@ -207,6 +292,15 @@ namespace AuctionHouseClient.Views
         {
             db.CancelAuction(SelectedItem);
             FillPosts();
+        }
+
+        private void Filter()
+        {
+            PostedList.Clear();
+            foreach(Auction a in actualPostedList)
+            {
+                if (a.Name.ToLower().Contains(FilterWord.ToLower())) PostedList.Add(a);
+            }
         }
     }
 }
