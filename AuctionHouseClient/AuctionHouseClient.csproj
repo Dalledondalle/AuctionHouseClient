@@ -78,6 +78,7 @@
     <Compile Include="Shared\PlayerInventory.cs" />
     <Compile Include="Shared\PlayerParent.cs" />
     <Compile Include="Shared\PlayerWTS.cs" />
+    <Compile Include="Shared\Post.cs" />
     <Compile Include="Shared\PremiumCurrency.cs" />
     <Compile Include="Shared\RegularCurrency.cs" />
     <Compile Include="ViewModels\AdminModel.cs" />

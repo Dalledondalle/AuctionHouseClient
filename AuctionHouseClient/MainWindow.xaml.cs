@@ -55,7 +55,7 @@ namespace AuctionHouseClient
         {
             searchAuctionsView = new SearchAuctionsView(dBConn);
             searchedAuctionsView = new SearchedAuctionsView(dBConn);
-            postAuctionsView = new PostAuctionsView();
+            postAuctionsView = new PostAuctionsView(dBConn);
             myAuctionsView = new MyAuctionsView(dBConn);
             myInventoryView = new MyInventoryView(dBConn);
             searchedAuctionsView.SwitchView += searchAuctionsView_SwitchView;
@@ -99,6 +99,7 @@ namespace AuctionHouseClient
             if (loginView.LoggedIn)
             {
                 if (!setupDone) Setup();
+                postAuctionsView.MakeWts();
                 DataContext = postAuctionsView;
             }
         }
